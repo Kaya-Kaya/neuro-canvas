@@ -17,9 +17,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    neuro_api = "~1.0",
-    pygame = "~2.6",
-    jsonschema = "~4.23",
+    "neuro_api~=1.0",
+    "pygame~=2.6",
+    "jsonschema~=4.23",
 ]
 
 [project.scripts]
