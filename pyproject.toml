@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neuro-canvas"
+version = "0.1.0"
+description = "Neuro's Canvas - A drawing application"
+authors = [{ name = "Kaya-Kaya" }]
+license = { text = "MIT" }
+readme = "README.md"
+homepage = "https://github.com/Kaya-Kaya/neuro_canvas"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.dependencies]
+neuro_api = "~1.0"
+pygame = "~2.6"
+jsonschema = "~4.23"
+
+[project.scripts]
+neuro-canvas = "neuro_canvas.application:start"
+
+[tool.setuptools.packages.find]
+where = ["src"]
