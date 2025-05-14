@@ -16,11 +16,11 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
-[project.dependencies]
-neuro_api = "~1.0"
-pygame = "~2.6"
-jsonschema = "~4.23"
+dependencies = [
+    neuro_api = "~1.0",
+    pygame = "~2.6",
+    jsonschema = "~4.23",
+]
 
 [project.scripts]
 neuro-canvas = "neuro_canvas.application:start"
