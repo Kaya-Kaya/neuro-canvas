@@ -14,4 +14,4 @@ This is a basic painting app built in Pygame that allows [Neuro-sama](https://ww
 `neuro-canvas`
 
 ## Contributing
-Feature suggestions and pull requests are welcome!
+Suggestions and pull requests are welcome!
