@@ -297,6 +297,63 @@ class DrawCircleAction(AbstractAction):
 
         return True, f"Drew line at {center} with {radius = }"
     
+class DrawTriangleAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "draw_triangle"
+    
+    @property
+    @override
+    def desc(self) -> str:
+        return "Draw a triangle with center \"center\" and a \"radius\", rotated by \"rotation\" degrees."
+    
+    @property
+    @override
+    def schema(self) -> Optional[Dict[str, object]]:
+        return {
+            "type": "object",
+            "required": ["center", "radius", "rotation"],
+            "properties": {
+                "center": { 
+                    "type": "object",
+                    "required": ["x", "y"],
+                    "properties": {
+                        "x": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": SCREEN_WIDTH
+                        },
+                        "y": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": SCREEN_HEIGHT
+                        }
+                    }
+                },
+                "radius": { 
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": max(SCREEN_HEIGHT, SCREEN_WIDTH)
+                },
+                "rotation": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 360
+                }
+            }
+        }
+    
+    @override
+    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+        center = (data["center"]["x"], data["center"]["y"])
+        radius = data["radius"]
+        rotation = data["rotation"]
+        
+        Canvas().draw_triangle(center, radius, rotation)
+    
+        return True, f"Drew triangle with center {center}, radius {radius}, and rotation {rotation}"
+
 class SetBrushColorAction(AbstractAction):
     @property
     @override
