@@ -28,6 +28,7 @@ class Canvas:
         pygame.display.set_caption(APP_NAME) 
         self._initialized = True
 
+    @staticmethod
     def record_action(fn: Callable) -> Callable:
         """
         Decorator to update the display after the function is called.
@@ -39,6 +40,7 @@ class Canvas:
 
         return wrapper
     
+    @staticmethod
     def update_display(fn: Callable) -> Callable:
         """
         Decorator to update the display after the function is called.
