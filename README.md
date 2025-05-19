@@ -8,20 +8,26 @@ This is a basic painting app built in [Pygame](https://www.pygame.org/docs/) tha
 </p>
 
 ## Installation
+
 `pip install neuro-canvas`
 
 ## Usage
+
 `neuro-canvas`
 
 ## Features
-### Drawing:
+
+### Drawing
+
 - Straight line
 - Sequence of straight lines
 - Circle
 - Rectangle
 - Curve
+- Triangle (equilateral only)
 
-### Actions:
+### Additional actions
+
 - Set background color (preset + custom)
 - Set brush color (preset + custom)
 - Undo
@@ -30,4 +36,5 @@ This is a basic painting app built in [Pygame](https://www.pygame.org/docs/) tha
 > Pygame does not support anti-aliased curves, so they will appear pixelated. I may implement my own curve function at some point to fix this.
 
 ## Contributing
+
 Suggestions and pull requests are welcome!

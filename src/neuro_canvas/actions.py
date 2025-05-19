@@ -305,6 +305,68 @@ class DrawCircleAction(AbstractAction):
 
         return True, f"Drew line at {center} with {radius = }"
     
+class DrawTriangleAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "draw_triangle"
+    
+    @property
+    @override
+    def desc(self) -> str:
+        return (
+            "Draw an equilateral triangle."
+            "Use \"center\" to set the triangle's center."
+            "Use \"size\" to set the size of the triangle."
+            "Use \"rotation\" to rotate the triangle."
+        )
+    
+    @property
+    @override
+    def schema(self) -> Optional[Dict[str, object]]:
+        return {
+            "type": "object",
+            "required": ["center", "radius", "rotation"],
+            "properties": {
+                "center": { 
+                    "type": "object",
+                    "required": ["x", "y"],
+                    "properties": {
+                        "x": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": SCREEN_WIDTH
+                        },
+                        "y": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": SCREEN_HEIGHT
+                        }
+                    }
+                },
+                "size": { 
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": max(SCREEN_HEIGHT, SCREEN_WIDTH)
+                },
+                "rotation": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMaximum": 120 
+                }
+            }
+        }
+    
+    @override
+    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+        center = (data["center"]["x"], data["center"]["y"])
+        size = data["size"]
+        rotation = data["rotation"]
+        
+        Canvas().draw_triangle(center, size, rotation)
+    
+        return True, f"Drew triangle with center {center}, with size {size}, and rotated {rotation} degrees."
+
 class SetBrushColorAction(AbstractAction):
     @property
     @override

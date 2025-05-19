@@ -1,6 +1,7 @@
 """Canvas - The canvas for Neuro to draw in."""
 
 from pygame import gfxdraw, Rect
+import math
 
 from functools import partial
 
@@ -105,3 +106,21 @@ class Canvas:
     @record_action
     def draw_rectangle(self, left_top: Coordinate, width_height: Coordinate) -> None:
         gfxdraw.rectangle(self.screen, Rect(left_top, width_height), self.brush_color)
+
+    @update_display
+    @record_action
+    def draw_triangle(self, center: Coordinate, size: int, rotation: int | float) -> None:
+        # Calculate the three vertices for an equilateral triangle
+        # using angles -90°, 30°, and 150° so that one vertex is at the top.
+        cx, cy = center
+        # Base angles for an equilateral triangle (in radians)
+        base_angles = [math.radians(-90), math.radians(30), math.radians(150)]
+        rotation_radians = math.radians(rotation)
+        # Add the rotation offset to each base angle
+        rotated_angles = [angle + rotation_radians for angle in base_angles]
+        vertices = [
+            (int(cx + size * math.cos(angle)), int(cy + size * math.sin(angle)))
+            for angle in rotated_angles
+        ]
+        # Draw lines between the vertices to form the triangle.
+        pygame.draw.aalines(self.screen, self.brush_color, True, vertices)
