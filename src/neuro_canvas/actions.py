@@ -19,8 +19,8 @@ BEZIER_STEPS: Final = 4
 logger = logging.getLogger(__name__)
 
 def handle_json(
-    action_function: Callable[[Dict], Coroutine[Any, Any, Tuple[bool, Optional[str]]]],
-    schema: Optional[Dict[str, object]]
+    action_function: Callable[[Optional[Dict]], Coroutine[Any, Any, Tuple[bool, Optional[str]]]],
+    schema: Dict[str, object]
 ) -> Callable[[NeuroAction], Coroutine[Any, Any, Tuple[bool, Optional[str]]]]:
     """
     Decorator that parses JSON data from the NeuroAction, validates it against the action's schema,
@@ -30,12 +30,12 @@ def handle_json(
     """
     async def wrapper(action: NeuroAction) -> Tuple[bool, Optional[str]]:
         try:
-            if schema is not None:
-                data = json.loads(action.data)
-            
-                validate(data, schema)
-            else:
+            if action.data is None:
                 data = None
+            else:
+                data = json.loads(action.data)
+        
+            validate(data, schema)
 
             logger.info(f"Executing action {action.name} with args {data}")
             return await action_function(data)
@@ -61,8 +61,8 @@ class AbstractAction(ABC):
 
     @property
     @abstractmethod
-    def schema(self) -> Optional[Dict[str, object]]:
-        return None
+    def schema(self) -> Dict[str, object]:
+        return {}
 
     def get_action(self) -> Action:
         """
@@ -74,7 +74,7 @@ class AbstractAction(ABC):
         return handle_json(self.perform_action, self.schema)
 
     @abstractmethod
-    async def perform_action(self, data: Optional[dict]) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         """
         Carries out the action.
         """
@@ -94,7 +94,7 @@ class DrawLineAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["start", "end"],
@@ -135,7 +135,9 @@ class DrawLineAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         start = data["start"]["x"], data["start"]["y"]
         end = data["end"]["x"], data["end"]["y"]
 
@@ -159,7 +161,7 @@ class DrawLinesAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["points", "closed"],
@@ -189,7 +191,9 @@ class DrawLinesAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         points = [(point["x"], point["y"]) for point in data["points"]]
         closed = data["closed"]
 
@@ -210,7 +214,7 @@ class DrawCurveAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["points"],
@@ -239,7 +243,9 @@ class DrawCurveAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         points = [(point["x"], point["y"]) for point in data["points"]]
 
         Canvas().draw_curve(points, BEZIER_STEPS)
@@ -259,7 +265,7 @@ class DrawCircleAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["center", "radius"],
@@ -289,7 +295,9 @@ class DrawCircleAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         center = data["center"]["x"], data["center"]["y"]
         radius = data["radius"]
 
@@ -367,7 +375,7 @@ class SetBrushColorAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["color"],
@@ -380,9 +388,11 @@ class SetBrushColorAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         color = colors[data["color"]]
-        assert data["color"] in colors
+        assert data["color"] in colors, f"'{data["color"]}' is not in the colors dictionary"
 
         Canvas().set_brush_color(color)
 
@@ -401,7 +411,7 @@ class SetCustomBrushColorAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["color"],
@@ -436,7 +446,9 @@ class SetCustomBrushColorAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         r = data["color"]["r"]
         g = data["color"]["g"]
         b = data["color"]["b"]
@@ -460,7 +472,7 @@ class SetBackgroundColorAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["color"],
@@ -473,7 +485,9 @@ class SetBackgroundColorAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         color = colors[data["color"]]
         assert data["color"] in colors
 
@@ -494,7 +508,7 @@ class SetCustomBackgroundColorAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["color"],
@@ -524,7 +538,9 @@ class SetCustomBackgroundColorAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         r = data["color"]["r"]
         g = data["color"]["g"]
         b = data["color"]["b"]
@@ -547,11 +563,11 @@ class UndoAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
-        return None
+    def schema(self) -> Dict[str, object]:
+        return {}
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[dict]) -> Tuple[bool, Optional[str]]:
         Canvas().undo()
 
         return True, f"Performed undo"
@@ -575,7 +591,7 @@ class DrawRectangleAction(AbstractAction):
 
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
             "required": ["left", "top", "width", "height"],
@@ -604,7 +620,9 @@ class DrawRectangleAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         left_top = data["left"], data["top"]
         width_height = data["width"], data["height"]
 
