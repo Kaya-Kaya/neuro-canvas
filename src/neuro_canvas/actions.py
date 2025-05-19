@@ -314,7 +314,12 @@ class DrawTriangleAction(AbstractAction):
     @property
     @override
     def desc(self) -> str:
-        return "Draw a triangle with center \"center\" and a \"radius\", rotated by \"rotation\" degrees."
+        return (
+            "Draw an equilateral triangle."
+            "Use \"center\" to set the triangle's center."
+            "Use \"size\" to set the size of the triangle."
+            "Use \"rotation\" to rotate the triangle."
+        )
     
     @property
     @override
@@ -339,15 +344,15 @@ class DrawTriangleAction(AbstractAction):
                         }
                     }
                 },
-                "radius": { 
+                "size": { 
                     "type": "integer",
                     "exclusiveMinimum": 0,
                     "maximum": max(SCREEN_HEIGHT, SCREEN_WIDTH)
                 },
                 "rotation": {
-                    "type": "integer",
-                    "exclusiveMinimum": 0,
-                    "maximum": 360
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMaximum": 120 
                 }
             }
         }
@@ -355,12 +360,12 @@ class DrawTriangleAction(AbstractAction):
     @override
     async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
         center = (data["center"]["x"], data["center"]["y"])
-        radius = data["radius"]
+        size = data["size"]
         rotation = data["rotation"]
         
-        Canvas().draw_triangle(center, radius, rotation)
+        Canvas().draw_triangle(center, size, rotation)
     
-        return True, f"Drew triangle with center {center}, radius {radius}, and rotation {rotation}"
+        return True, f"Drew triangle with center {center}, with size {size}, and rotated {rotation} degrees."
 
 class SetBrushColorAction(AbstractAction):
     @property

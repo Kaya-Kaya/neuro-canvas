@@ -109,7 +109,7 @@ class Canvas:
 
     @update_display
     @record_action
-    def draw_triangle(self, center: Coordinate, radius: int, rotation: int) -> None:
+    def draw_triangle(self, center: Coordinate, size: int, rotation: int | float) -> None:
         # Calculate the three vertices for an equilateral triangle
         # using angles -90°, 30°, and 150° so that one vertex is at the top.
         cx, cy = center
@@ -119,7 +119,7 @@ class Canvas:
         # Add the rotation offset to each base angle
         rotated_angles = [angle + rotation_radians for angle in base_angles]
         vertices = [
-            (int(cx + radius * math.cos(angle)), int(cy + radius * math.sin(angle)))
+            (int(cx + size * math.cos(angle)), int(cy + size * math.sin(angle)))
             for angle in rotated_angles
         ]
         # Draw lines between the vertices to form the triangle.
