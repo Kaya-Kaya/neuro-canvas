@@ -634,5 +634,45 @@ class DrawRectangleAction(AbstractAction):
         Canvas().draw_rectangle(left_top, width_height)
 
         return True, f"Drew rectangle at {left_top} with dimensions {width_height}"
+    
+class BucketFillAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "bucket_fill"
+    
+    @property
+    @override
+    def desc(self) -> str:
+        return (
+            "Fills the empty area connected to the point you selected with the currently loaded colour."
+        )
+    
+    @property
+    @override
+    def schema(self) -> Dict[str, object]:
+        return {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": SCREEN_WIDTH
+                },
+                "y": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": SCREEN_HEIGHT
+                }
+            }
+        }
+    
+    @override
+    async def perform_action(self, data) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+        x = data["x"]
+        y = data["y"]
+        Canvas().bucket_fill((x, y))
+        return True, f"Bucket filled at {(x, y)}"
 
 all_actions = [action_class() for action_class in AbstractAction.__subclasses__()]
