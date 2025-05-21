@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neuro-canvas"
-version = "0.1.0"
+version = "0.2.0"
 description = "Neuro's Canvas - A drawing application"
 authors = [{ name = "Kaya-Kaya" }]
 license = { text = "MIT" }
