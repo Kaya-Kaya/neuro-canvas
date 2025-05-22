@@ -315,18 +315,18 @@ class DrawTriangleAction(AbstractAction):
     @override
     def desc(self) -> str:
         return (
-            "Draw an equilateral triangle."
-            "Use \"center\" to set the triangle's center."
-            "Use \"size\" to set the size of the triangle."
+            "Draw an equilateral triangle. "
+            "Use \"center\" to set the triangle's center. "
+            "Use \"size\" to set the size of the triangle. "
             "Use \"rotation\" to rotate the triangle."
         )
     
     @property
     @override
-    def schema(self) -> Optional[Dict[str, object]]:
+    def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
-            "required": ["center", "radius", "rotation"],
+            "required": ["center", "size", "rotation"],
             "properties": {
                 "center": { 
                     "type": "object",
@@ -358,7 +358,9 @@ class DrawTriangleAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data: dict) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+
         center = (data["center"]["x"], data["center"]["y"])
         size = data["size"]
         rotation = data["rotation"]
@@ -587,7 +589,7 @@ class DrawRectangleAction(AbstractAction):
     @override
     def desc(self) -> str:
         return (
-            "Draws a rectangle at a given point."
+            "Draws a rectangle at a given point. "
             "\"left\" refers to the x position of the left side of the rectangle, "
             "\"top\" refers to the y position of the top side of the rectangle, "
             "\"width\" refers to the width of the rectangle, "
