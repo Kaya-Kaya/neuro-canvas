@@ -671,7 +671,7 @@ class BucketFillAction(AbstractAction):
         }
     
     @override
-    async def perform_action(self, data) -> Tuple[bool, Optional[str]]:
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
         x = data["x"]
         y = data["y"]
