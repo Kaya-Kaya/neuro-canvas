@@ -28,6 +28,7 @@ This is a basic painting app built in [Pygame](https://www.pygame.org/docs/) tha
 
 ### Additional actions
 
+- Bucket fill
 - Set background color (preset + custom)
 - Set brush color (preset + custom)
 - Undo
