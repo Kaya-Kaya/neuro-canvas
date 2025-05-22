@@ -664,7 +664,8 @@ class BucketFillAction(AbstractAction):
                     "minimum": 0,
                     "maximum": SCREEN_HEIGHT
                 }
-            }
+            },
+            "required": ["x", "y"]
         }
     
     @override
