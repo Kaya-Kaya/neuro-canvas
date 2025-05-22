@@ -124,3 +124,20 @@ class Canvas:
         ]
         # Draw lines between the vertices to form the triangle.
         pygame.draw.aalines(self.screen, self.brush_color, True, vertices)
+    
+    @update_display
+    @record_action
+    def bucket_fill(self, point: Coordinate) -> None:
+        target_color = self.screen.get_at(point)
+        fill_color = self.brush_color
+        if target_color == fill_color:
+            return
+        stack = [point]
+        width, height = self.screen.get_size()
+        while stack:
+            x, y = stack.pop()
+            if x < 0 or x >= width or y < 0 or y >= height:
+                continue
+            if self.screen.get_at((x, y)) == target_color:
+                self.screen.set_at((x, y), fill_color)
+                stack.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
