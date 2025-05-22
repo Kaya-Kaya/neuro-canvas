@@ -109,7 +109,9 @@ class Canvas:
 
     @update_display
     @record_action
-    def draw_triangle(self, center: Coordinate, size: int, rotation: int | float) -> None:
+    def draw_triangle(self, center: Coordinate, side_length: int, rotation: int | float) -> None:
+        # Calculate circumradius from side length
+        size = side_length / math.sqrt(3)
         # Calculate the three vertices for an equilateral triangle
         # using angles -90°, 30°, and 150° so that one vertex is at the top.
         cx, cy = center

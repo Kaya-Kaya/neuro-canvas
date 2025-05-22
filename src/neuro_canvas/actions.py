@@ -317,7 +317,7 @@ class DrawTriangleAction(AbstractAction):
         return (
             "Draw an equilateral triangle. "
             "Use \"center\" to set the triangle's center. "
-            "Use \"size\" to set the size of the triangle. "
+            "Use \"side_length\" to set the size of the triangle. "
             "Use \"rotation\" to rotate the triangle."
         )
     
@@ -326,7 +326,7 @@ class DrawTriangleAction(AbstractAction):
     def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
-            "required": ["center", "size", "rotation"],
+            "required": ["center", "side_length", "rotation"],
             "properties": {
                 "center": { 
                     "type": "object",
@@ -344,7 +344,7 @@ class DrawTriangleAction(AbstractAction):
                         }
                     }
                 },
-                "size": { 
+                "side_length": { 
                     "type": "integer",
                     "exclusiveMinimum": 0,
                     "maximum": max(SCREEN_HEIGHT, SCREEN_WIDTH)
@@ -362,12 +362,12 @@ class DrawTriangleAction(AbstractAction):
         assert data, "'data' was expected but was set to None"
 
         center = (data["center"]["x"], data["center"]["y"])
-        size = data["size"]
+        side_length = data["side_length"]
         rotation = data["rotation"]
         
-        Canvas().draw_triangle(center, size, rotation)
+        Canvas().draw_triangle(center, side_length, rotation)
     
-        return True, f"Drew triangle with center {center}, with size {size}, and rotated {rotation} degrees."
+        return True, f"Drew triangle with center {center}, with side length {side_length}, and rotated {rotation} degrees."
 
 class SetBrushColorAction(AbstractAction):
     @property
