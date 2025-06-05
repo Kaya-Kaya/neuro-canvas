@@ -678,4 +678,122 @@ class BucketFillAction(AbstractAction):
         Canvas().bucket_fill((x, y))
         return True, f"Bucket filled at {(x, y)}"
 
+class AddLayerAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "add_layer"
+    
+    @property
+    @override
+    def desc(self) -> str:
+        return "Adds a new layer with the specified name."
+    
+    @property
+    @override
+    def schema(self) -> Dict[str, object]:
+        return {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {"type": "string"}
+            }
+        }
+    
+    @override
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data is not None, "'data' was expected but was set to None"
+        layer_name = data["name"]
+        Canvas().add_layer(layer_name)
+        return True, f"Added layer: {layer_name}"
+
+class RemoveLayerAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "remove_layer"
+    
+    @property
+    @override
+    def desc(self) -> str:
+        return "Removes the specified layer (except the base layer)."
+    
+    @property
+    @override
+    def schema(self) -> Dict[str, object]:
+        return {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {"type": "string"}
+            }
+        }
+    
+    @override
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data is not None, "'data' was expected but was set to None"
+        layer_name = data["name"]
+        Canvas().remove_layer(layer_name)
+        return True, f"Removed layer: {layer_name}"
+
+class SetLayerVisibilityAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "set_layer_visibility"
+    
+    @property
+    @override
+    def desc(self) -> str:
+        return "Sets the visibility of the specified layer."
+    
+    @property
+    @override
+    def schema(self) -> Dict[str, object]:
+        return {
+            "type": "object",
+            "required": ["name", "visible"],
+            "properties": {
+                "name": {"type": "string"},
+                "visible": {"type": "boolean"}
+            }
+        }
+    
+    @override
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data is not None, "'data' was expected but was set to None"
+        layer_name = data["name"]
+        visible = data["visible"]
+        Canvas().set_layer_visibility(layer_name, visible)
+        return True, f"Set visibility of layer '{layer_name}' to {visible}"
+
+class SwitchActiveLayerAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "switch_active_layer"
+    
+    @property
+    @override
+    def desc(self) -> str:
+        return "Switches the active layer to the specified layer."
+    
+    @property
+    @override
+    def schema(self) -> Dict[str, object]:
+        return {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {"type": "string"}
+            }
+        }
+    
+    @override
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data is not None, "'data' was expected but was set to None"
+        layer_name = data["name"]
+        Canvas().switch_active_layer(layer_name)
+        return True, f"Switched active layer to: {layer_name}"
+
 all_actions = [action_class() for action_class in AbstractAction.__subclasses__()]

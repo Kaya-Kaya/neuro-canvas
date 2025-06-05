@@ -5,9 +5,20 @@ import math
 
 from functools import partial
 
-from typing import Callable, Tuple, Any, List
+from typing import Callable, Tuple, Any, List, Dict
+
+import pygame  # ensure pygame is imported at the top
 
 from .constants import *
+
+# New Layer class
+class Layer:
+    def __init__(self, name: str, width: int, height: int):
+        self.name = name
+        # Create a surface with per-pixel alpha so that layers can be transparent
+        self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        # By default, a layer is visible
+        self.visible = True
 
 Coordinate = Tuple[int, int]
 
@@ -23,11 +34,55 @@ class Canvas:
         
         self.actions: List[Callable] = []
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        # Layer support: dictionary of layers and a list for layer order.
+        self.layers: Dict[str, Layer] = {}
+        self.layers_order: List[str] = []
+        # Create a dedicated "background" layer followed by a "base" layer for drawings.
+        self.add_layer("background")
+        self.add_layer("base")
+        # Set the active layer to "base" so that drawing actions are applied there.
+        self.active_layer = "base"
+
         self.set_brush_color(colors["black"])
         self.set_brush_width(1)
         self.clear_canvas()
         pygame.display.set_caption(APP_NAME) 
         self._initialized = True
+
+    def add_layer(self, name: str) -> None:
+        if name in self.layers: 
+            return
+        new_layer = Layer(name, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.layers[name] = new_layer
+        self.layers_order.append(name)
+
+    def remove_layer(self, name: str) -> None:
+        if name in self.layers and name != "base":
+            del self.layers[name]
+            self.layers_order.remove(name)
+            # Reset active layer if needed.
+            if self.active_layer == name:
+                self.active_layer = "base"
+
+    def set_layer_visibility(self, name: str, visible: bool) -> None:
+        if name in self.layers:
+            self.layers[name].visible = visible
+            self._composite_layers()
+
+    def switch_active_layer(self, name: str) -> None:
+        if name in self.layers:
+            self.active_layer = name
+
+    def _get_active_surface(self) -> pygame.Surface:
+        return self.layers[self.active_layer].surface
+
+    def _composite_layers(self) -> None:
+        # Clear the main screen to the default background
+        self.screen.fill(colors["white"])
+        for layer_name in self.layers_order:
+            layer = self.layers[layer_name]
+            if layer.visible:
+                self.screen.blit(layer.surface, (0, 0))
 
     @staticmethod
     def record_action(fn: Callable) -> Callable:
@@ -49,6 +104,7 @@ class Canvas:
         def wrapper(self, *args, **kwargs) -> Any:
             fn(self, *args, **kwargs)
 
+            self._composite_layers()
             pygame.display.update()
 
         return wrapper
@@ -63,15 +119,20 @@ class Canvas:
     @update_display
     @record_action
     def clear_canvas(self) -> None:
-        self.screen.fill(colors["white"])
+        # Clear all layers
+        for layer in self.layers.values():
+            layer.surface.fill((0, 0, 0, 0))  # Clear to transparent
+        # Fill the "background" layer with white by default.
+        self.layers["background"].surface.fill(colors["white"])
 
     @update_display
     @record_action
     def set_background(self, color: pygame.Color) -> None:
-        self.screen.fill(color)
+        # Set background only on the "background" layer.
+        self.layers["background"].surface.fill(color)
 
         for action in self.actions:
-            if action.func.__name__ != "set_background" and action.func.__name__ != "clear_canvas":
+            if action.func.__name__ not in ("set_background", "clear_canvas"):
                 action()
 
     @record_action
@@ -85,27 +146,27 @@ class Canvas:
     @update_display
     @record_action
     def draw_line(self, start_pos: Coordinate, end_pos: Coordinate) -> None:
-        pygame.draw.aaline(self.screen, self.brush_color, start_pos, end_pos)
+        pygame.draw.aaline(self._get_active_surface(), self.brush_color, start_pos, end_pos)
 
     @update_display
     @record_action
     def draw_lines(self, points: List[Coordinate], closed: bool) -> None:
-        pygame.draw.aalines(self.screen, self.brush_color, closed, points)
+        pygame.draw.aalines(self._get_active_surface(), self.brush_color, closed, points)
 
     @update_display
     @record_action
     def draw_curve(self, points: List[Coordinate], steps: int) -> None:
-        gfxdraw.bezier(self.screen, points, steps, self.brush_color)
+        gfxdraw.bezier(self._get_active_surface(), points, steps, self.brush_color)
 
     @update_display
     @record_action
     def draw_circle(self, center: Coordinate, radius: int) -> None:
-        gfxdraw.aacircle(self.screen, center[0], center[1], radius, self.brush_color)
+        gfxdraw.aacircle(self._get_active_surface(), center[0], center[1], radius, self.brush_color)
 
     @update_display
     @record_action
     def draw_rectangle(self, left_top: Coordinate, width_height: Coordinate) -> None:
-        gfxdraw.rectangle(self.screen, Rect(left_top, width_height), self.brush_color)
+        gfxdraw.rectangle(self._get_active_surface(), Rect(left_top, width_height), self.brush_color)
 
     @update_display
     @record_action
@@ -125,21 +186,21 @@ class Canvas:
             for angle in rotated_angles
         ]
         # Draw lines between the vertices to form the triangle.
-        pygame.draw.aalines(self.screen, self.brush_color, True, vertices)
+        pygame.draw.aalines(self._get_active_surface(), self.brush_color, True, vertices)
     
     @update_display
     @record_action
     def bucket_fill(self, point: Coordinate) -> None:
-        target_color = self.screen.get_at(point)
+        target_color = self._get_active_surface().get_at(point)
         fill_color = self.brush_color
         if target_color == fill_color:
             return
         stack = [point]
-        width, height = self.screen.get_size()
+        width, height = self._get_active_surface().get_size()
         while stack:
             x, y = stack.pop()
             if x < 0 or x >= width or y < 0 or y >= height:
                 continue
-            if self.screen.get_at((x, y)) == target_color:
-                self.screen.set_at((x, y), fill_color)
+            if self._get_active_surface().get_at((x, y)) == target_color:
+                self._get_active_surface().set_at((x, y), fill_color)
                 stack.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
