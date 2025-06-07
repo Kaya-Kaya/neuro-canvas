@@ -32,9 +32,7 @@ This is a basic painting app built in [Pygame](https://www.pygame.org/docs/) tha
 - Set background color (preset + custom)
 - Set brush color (preset + custom)
 - Undo
-
-> [!NOTE]
-> Pygame does not support anti-aliased curves, so they will appear pixelated. I may implement my own curve function at some point to fix this.
+- Export to PNG
 
 ## Contributing
 
