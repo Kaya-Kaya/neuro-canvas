@@ -143,3 +143,10 @@ class Canvas:
             if self.screen.get_at((x, y)) == target_color:
                 self.screen.set_at((x, y), fill_color)
                 stack.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
+
+    def export(self, filename: str) -> bool:
+        try:
+            pygame.image.save(self.screen, f"{filename}.png")
+            return True
+        except pygame.error as e:
+            return False
