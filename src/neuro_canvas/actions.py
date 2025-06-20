@@ -704,7 +704,10 @@ class AddLayerAction(AbstractAction):
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
-        Canvas().add_layer(layer_name)
+        canvas = Canvas()
+        if layer_name in canvas.layers:
+            return False, f"Layer '{layer_name}' already exists."
+        canvas.add_layer(layer_name)
         return True, f"Added layer: {layer_name}"
 
 class RemoveLayerAction(AbstractAction):
@@ -733,7 +736,12 @@ class RemoveLayerAction(AbstractAction):
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
-        Canvas().remove_layer(layer_name)
+        canvas = Canvas()
+        if layer_name not in canvas.layers:
+            return False, f"Layer '{layer_name}' does not exist."
+        if layer_name == "base":
+            return False, "Cannot remove base layer."
+        canvas.remove_layer(layer_name)
         return True, f"Removed layer: {layer_name}"
 
 class SetLayerVisibilityAction(AbstractAction):
