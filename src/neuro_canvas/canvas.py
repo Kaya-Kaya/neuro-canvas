@@ -64,10 +64,17 @@ class Canvas:
             if self.active_layer == name:
                 self.active_layer = "base"
 
-    def set_layer_visibility(self, name: str, visible: bool) -> None:
-        if name in self.layers:
-            self.layers[name].visible = visible
-            self._composite_layers()
+    def set_layer_visibility(self, name: str, visibility: float) -> None:
+        """
+        Sets the visibility of a layer using a value between 0 (invisible) and 1 (fully visible).
+        """
+        if name not in self.layers:
+            raise ValueError(f"Layer '{name}' does not exist.")
+        
+        layer = self.layers[name]
+        layer.visible = visibility > 0  # Treat visibility > 0 as "visible"
+        layer.surface.set_alpha(int(visibility * 255))  # Scale visibility to alpha (0-255)
+        self._composite_layers()  # Re-composite layers to reflect the change
 
     def switch_active_layer(self, name: str) -> None:
         if name in self.layers:

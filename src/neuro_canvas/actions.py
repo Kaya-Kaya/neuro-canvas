@@ -706,7 +706,7 @@ class AddLayerAction(AbstractAction):
         layer_name = data["name"]
         canvas = Canvas()
         if layer_name in canvas.layers:
-            return False, f"Layer '{layer_name}' already exists."
+            return True, f"Layer '{layer_name}' already exists."
         canvas.add_layer(layer_name)
         return True, f"Added layer: {layer_name}"
 
@@ -719,7 +719,7 @@ class RemoveLayerAction(AbstractAction):
     @property
     @override
     def desc(self) -> str:
-        return "Removes the specified layer (except the base layer)."
+        return "Removes the specified layer (except the base or background layers)."
     
     @property
     @override
@@ -738,9 +738,9 @@ class RemoveLayerAction(AbstractAction):
         layer_name = data["name"]
         canvas = Canvas()
         if layer_name not in canvas.layers:
-            return False, f"Layer '{layer_name}' does not exist."
-        if layer_name == "base":
-            return False, "Cannot remove base layer."
+            return True, f"Layer '{layer_name}' does not exist."
+        if layer_name in ["base", "background"]:
+            return True, f"Cannot remove '{layer_name}' layer."
         canvas.remove_layer(layer_name)
         return True, f"Removed layer: {layer_name}"
 
@@ -753,17 +753,21 @@ class SetLayerVisibilityAction(AbstractAction):
     @property
     @override
     def desc(self) -> str:
-        return "Sets the visibility of the specified layer."
+        return "Sets the visibility of the specified layer using a value between 0 (invisible) and 1 (fully visible)."
     
     @property
     @override
     def schema(self) -> Dict[str, object]:
         return {
             "type": "object",
-            "required": ["name", "visible"],
+            "required": ["name", "visibility"],
             "properties": {
                 "name": {"type": "string"},
-                "visible": {"type": "boolean"}
+                "visibility": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                }
             }
         }
     
@@ -771,9 +775,12 @@ class SetLayerVisibilityAction(AbstractAction):
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
-        visible = data["visible"]
-        Canvas().set_layer_visibility(layer_name, visible)
-        return True, f"Set visibility of layer '{layer_name}' to {visible}"
+        visibility = data["visibility"]
+        try:
+            Canvas().set_layer_visibility(layer_name, visibility)
+            return True, f"Set visibility of layer '{layer_name}' to {visibility}"
+        except ValueError as e:
+            return False, str(e)
 
 class SwitchActiveLayerAction(AbstractAction):
     @property
@@ -801,7 +808,10 @@ class SwitchActiveLayerAction(AbstractAction):
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
-        Canvas().switch_active_layer(layer_name)
+        canvas = Canvas()
+        if layer_name not in canvas.layers:
+            return True, f"Layer '{layer_name}' does not exist."
+        canvas.switch_active_layer(layer_name)
         return True, f"Switched active layer to: {layer_name}"
 
 all_actions = [action_class() for action_class in AbstractAction.__subclasses__()]
