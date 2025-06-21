@@ -25,7 +25,7 @@ def handle_json(
     """
     Decorator that parses JSON data from the NeuroAction, validates it against the action's schema,
     and calls the specified action function.
-    
+
     It handles JSON decoding errors and unexpected exceptions, returning appropriate error messages.
     """
     async def wrapper(action: NeuroAction) -> Tuple[bool, Optional[str]]:
@@ -34,7 +34,7 @@ def handle_json(
                 data = None
             else:
                 data = json.loads(action.data)
-        
+
             validate(data, schema)
 
             logger.info(f"Executing action {action.name} with args {data}")
@@ -69,7 +69,7 @@ class AbstractAction(ABC):
         Returns an Action object containing the name, description, and schema of the action.
         """
         return Action(self.name, self.desc, self.schema)
-    
+
     def get_handler(self) -> Callable[[NeuroAction], Coroutine[Any, Any, Tuple[bool, Optional[str]]]]:
         return handle_json(self.perform_action, self.schema)
 
@@ -79,14 +79,14 @@ class AbstractAction(ABC):
         Carries out the action.
         """
         pass
-    
+
 
 class DrawLineAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "draw_line"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -99,7 +99,7 @@ class DrawLineAction(AbstractAction):
             "type": "object",
             "required": ["start", "end"],
             "properties": {
-                "start": { 
+                "start": {
                     "type": "object",
                     "required": ["x", "y"],
                     "properties": {
@@ -115,7 +115,7 @@ class DrawLineAction(AbstractAction):
                         }
                     }
                 },
-                "end": { 
+                "end": {
                     "type": "object",
                     "required": ["x", "y"],
                     "properties": {
@@ -133,7 +133,7 @@ class DrawLineAction(AbstractAction):
                 }
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -150,7 +150,7 @@ class DrawLinesAction(AbstractAction):
     @override
     def name(self) -> str:
         return "draw_lines"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -166,7 +166,7 @@ class DrawLinesAction(AbstractAction):
             "type": "object",
             "required": ["points", "closed"],
             "properties": {
-                "points": { 
+                "points": {
                     "type": "array",
                     "items": {
                         "type": "object",
@@ -189,7 +189,7 @@ class DrawLinesAction(AbstractAction):
                 "closed": { "type": "boolean" }
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -206,7 +206,7 @@ class DrawCurveAction(AbstractAction):
     @override
     def name(self) -> str:
         return "draw_curve"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -219,7 +219,7 @@ class DrawCurveAction(AbstractAction):
             "type": "object",
             "required": ["points"],
             "properties": {
-                "points": { 
+                "points": {
                     "type": "array",
                     "items": {
                         "type": "object",
@@ -241,7 +241,7 @@ class DrawCurveAction(AbstractAction):
                 }
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -251,13 +251,13 @@ class DrawCurveAction(AbstractAction):
         Canvas().draw_curve(points, BEZIER_STEPS)
 
         return True, f"Drew a curve through {points}"
-    
+
 class DrawCircleAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "draw_circle"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -270,7 +270,7 @@ class DrawCircleAction(AbstractAction):
             "type": "object",
             "required": ["center", "radius"],
             "properties": {
-                "center": { 
+                "center": {
                     "type": "object",
                     "required": ["x", "y"],
                     "properties": {
@@ -286,14 +286,14 @@ class DrawCircleAction(AbstractAction):
                         }
                     }
                 },
-                "radius": { 
+                "radius": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
                     "maximum": max(SCREEN_HEIGHT, SCREEN_WIDTH)
                 }
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -304,13 +304,13 @@ class DrawCircleAction(AbstractAction):
         Canvas().draw_circle(center, radius)
 
         return True, f"Drew line at {center} with {radius = }"
-    
+
 class DrawTriangleAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "draw_triangle"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -320,7 +320,7 @@ class DrawTriangleAction(AbstractAction):
             "Use \"side_length\" to set the size of the triangle. "
             "Use \"rotation\" to rotate the triangle."
         )
-    
+
     @property
     @override
     def schema(self) -> Dict[str, object]:
@@ -328,7 +328,7 @@ class DrawTriangleAction(AbstractAction):
             "type": "object",
             "required": ["center", "side_length", "rotation"],
             "properties": {
-                "center": { 
+                "center": {
                     "type": "object",
                     "required": ["x", "y"],
                     "properties": {
@@ -344,7 +344,7 @@ class DrawTriangleAction(AbstractAction):
                         }
                     }
                 },
-                "side_length": { 
+                "side_length": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
                     "maximum": max(SCREEN_HEIGHT, SCREEN_WIDTH)
@@ -352,11 +352,11 @@ class DrawTriangleAction(AbstractAction):
                 "rotation": {
                     "type": "number",
                     "minimum": 0,
-                    "exclusiveMaximum": 120 
+                    "exclusiveMaximum": 120
                 }
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -364,9 +364,9 @@ class DrawTriangleAction(AbstractAction):
         center = (data["center"]["x"], data["center"]["y"])
         side_length = data["side_length"]
         rotation = data["rotation"]
-        
+
         Canvas().draw_triangle(center, side_length, rotation)
-    
+
         return True, f"Drew triangle with center {center}, with side length {side_length}, and rotated {rotation} degrees."
 
 class SetBrushColorAction(AbstractAction):
@@ -374,7 +374,7 @@ class SetBrushColorAction(AbstractAction):
     @override
     def name(self) -> str:
         return "set_brush_color"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -387,13 +387,13 @@ class SetBrushColorAction(AbstractAction):
             "type": "object",
             "required": ["color"],
             "properties": {
-                "color": { 
+                "color": {
                     "type": "string",
                     "enum": list(colors.keys())
                 },
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -404,13 +404,13 @@ class SetBrushColorAction(AbstractAction):
         Canvas().set_brush_color(color)
 
         return True, f"Set brush color to {color}"
-    
+
 class SetCustomBrushColorAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "set_custom_brush_color"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -423,7 +423,7 @@ class SetCustomBrushColorAction(AbstractAction):
             "type": "object",
             "required": ["color"],
             "properties": {
-                "color": { 
+                "color": {
                     "type": "object",
                     "required": ["r", "g", "b"],
                     "properties": {
@@ -451,7 +451,7 @@ class SetCustomBrushColorAction(AbstractAction):
                 },
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -465,13 +465,13 @@ class SetCustomBrushColorAction(AbstractAction):
         Canvas().set_brush_color(color)
 
         return True, f"Set brush color to {color}"
-    
+
 class SetBackgroundColorAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "set_background_color"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -484,13 +484,13 @@ class SetBackgroundColorAction(AbstractAction):
             "type": "object",
             "required": ["color"],
             "properties": {
-                "color": { 
+                "color": {
                     "type": "string",
                     "enum": list(colors.keys())
                 },
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -501,13 +501,13 @@ class SetBackgroundColorAction(AbstractAction):
         Canvas().set_background(color)
 
         return True, f"Set background color to {color}"
-    
+
 class SetCustomBackgroundColorAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "set_custom_background_color"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -520,7 +520,7 @@ class SetCustomBackgroundColorAction(AbstractAction):
             "type": "object",
             "required": ["color"],
             "properties": {
-                "color": { 
+                "color": {
                     "type": "object",
                     "required": ["r", "g", "b"],
                     "properties": {
@@ -543,7 +543,7 @@ class SetCustomBackgroundColorAction(AbstractAction):
                 },
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -556,13 +556,13 @@ class SetCustomBackgroundColorAction(AbstractAction):
         Canvas().set_background(color)
 
         return True, f"Set background color to {color}"
-    
+
 class UndoAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "undo"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -572,19 +572,19 @@ class UndoAction(AbstractAction):
     @override
     def schema(self) -> Dict[str, object]:
         return {}
-    
+
     @override
     async def perform_action(self, data: Optional[dict]) -> Tuple[bool, Optional[str]]:
         Canvas().undo()
 
         return True, f"Performed undo"
-    
+
 class DrawRectangleAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "draw_rectangle"
-    
+
     @property
     @override
     def desc(self) -> str:
@@ -622,10 +622,10 @@ class DrawRectangleAction(AbstractAction):
                    "type": "integer",
                     "minimum": 0,
                     "maximum": SCREEN_WIDTH
-                }, 
+                },
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -636,20 +636,20 @@ class DrawRectangleAction(AbstractAction):
         Canvas().draw_rectangle(left_top, width_height)
 
         return True, f"Drew rectangle at {left_top} with dimensions {width_height}"
-    
+
 class BucketFillAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
         return "bucket_fill"
-    
+
     @property
     @override
     def desc(self) -> str:
         return (
             "Fills the empty area connected to the point you selected with the currently loaded colour."
         )
-    
+
     @property
     @override
     def schema(self) -> Dict[str, object]:
@@ -669,7 +669,7 @@ class BucketFillAction(AbstractAction):
             },
             "required": ["x", "y"]
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -677,6 +677,40 @@ class BucketFillAction(AbstractAction):
         y = data["y"]
         Canvas().bucket_fill((x, y))
         return True, f"Bucket filled at {(x, y)}"
+
+class ExportAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "export"
+
+    @property
+    @override
+    def desc(self) -> str:
+        return (
+            "Saves your drawing as a PNG."
+        )
+
+    @property
+    @override
+    def schema(self) -> Dict[str, object]:
+        return {
+            "type": "object",
+            "properties": { "filename": { "type": "string" } },
+            "required": ["filename"]
+        }
+
+    @override
+    async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
+        assert data, "'data' was expected but was set to None"
+        filename = data["filename"]
+
+        successful = Canvas().export(filename)
+
+        if successful:
+            return True, f"Drawing saved as {filename}.png"
+        else:
+            return False, f"Saving failed. '{filename}' is likely not a valid filename."
 
 class AddLayerAction(AbstractAction):
     @property

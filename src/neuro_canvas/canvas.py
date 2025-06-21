@@ -31,7 +31,7 @@ class Canvas:
     def __init__(self):
         if hasattr(self, '_initialized') and self._initialized:
             return
-        
+
         self.actions: List[Callable] = []
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         # Layer support: dictionary of layers and a list for layer order.
@@ -46,7 +46,7 @@ class Canvas:
         self.set_brush_color(colors["black"])
         self.set_brush_width(1)
         self.clear_canvas()
-        pygame.display.set_caption(APP_NAME) 
+        pygame.display.set_caption(APP_NAME)
         self._initialized = True
 
     def add_layer(self, name: str) -> None:
@@ -98,11 +98,11 @@ class Canvas:
         """
         def wrapper(self, *args, **kwargs) -> Any:
             fn(self, *args, **kwargs)
-            
+
             self.actions.append(partial(fn, self, *args, **kwargs))
 
         return wrapper
-    
+
     @staticmethod
     def update_display(fn: Callable) -> Callable:
         """
@@ -115,14 +115,14 @@ class Canvas:
             pygame.display.update()
 
         return wrapper
-    
+
     @update_display
     def undo(self) -> None:
         self.actions = self.actions[:-1]
 
         for action in self.actions:
             action()
-    
+
     @update_display
     @record_action
     def clear_canvas(self) -> None:
@@ -153,12 +153,12 @@ class Canvas:
     @update_display
     @record_action
     def draw_line(self, start_pos: Coordinate, end_pos: Coordinate) -> None:
-        pygame.draw.aaline(self._get_active_surface(), self.brush_color, start_pos, end_pos)
+        pygame.draw.line(self.screen, self.brush_color, start_pos, end_pos)
 
     @update_display
     @record_action
     def draw_lines(self, points: List[Coordinate], closed: bool) -> None:
-        pygame.draw.aalines(self._get_active_surface(), self.brush_color, closed, points)
+        pygame.draw.lines(self.screen, self.brush_color, closed, points)
 
     @update_display
     @record_action
@@ -168,7 +168,7 @@ class Canvas:
     @update_display
     @record_action
     def draw_circle(self, center: Coordinate, radius: int) -> None:
-        gfxdraw.aacircle(self._get_active_surface(), center[0], center[1], radius, self.brush_color)
+        gfxdraw.circle(self.screen, center[0], center[1], radius, self.brush_color)
 
     @update_display
     @record_action
@@ -193,8 +193,8 @@ class Canvas:
             for angle in rotated_angles
         ]
         # Draw lines between the vertices to form the triangle.
-        pygame.draw.aalines(self._get_active_surface(), self.brush_color, True, vertices)
-    
+        pygame.draw.lines(self.screen, self.brush_color, True, vertices)
+
     @update_display
     @record_action
     def bucket_fill(self, point: Coordinate) -> None:
@@ -211,3 +211,10 @@ class Canvas:
             if self._get_active_surface().get_at((x, y)) == target_color:
                 self._get_active_surface().set_at((x, y), fill_color)
                 stack.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
+
+    def export(self, filename: str) -> bool:
+        try:
+            pygame.image.save(self.screen, f"{filename}.png")
+            return True
+        except pygame.error as e:
+            return False
