@@ -49,37 +49,6 @@ class Canvas:
         pygame.display.set_caption(APP_NAME)
         self._initialized = True
 
-    def add_layer(self, name: str) -> None:
-        if name in self.layers: 
-            return
-        new_layer = Layer(name, SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.layers[name] = new_layer
-        self.layers_order.append(name)
-
-    def remove_layer(self, name: str) -> None:
-        if name in self.layers and name != "base":
-            del self.layers[name]
-            self.layers_order.remove(name)
-            # Reset active layer if needed.
-            if self.active_layer == name:
-                self.active_layer = "base"
-
-    def set_layer_visibility(self, name: str, visibility: float) -> None:
-        """
-        Sets the visibility of a layer using a value between 0 (invisible) and 1 (fully visible).
-        """
-        if name not in self.layers:
-            raise ValueError(f"Layer '{name}' does not exist.")
-        
-        layer = self.layers[name]
-        layer.visible = visibility > 0  # Treat visibility > 0 as "visible"
-        layer.surface.set_alpha(int(visibility * 255))  # Scale visibility to alpha (0-255)
-        self._composite_layers()  # Re-composite layers to reflect the change
-
-    def switch_active_layer(self, name: str) -> None:
-        if name in self.layers:
-            self.active_layer = name
-
     def _get_active_surface(self) -> pygame.Surface:
         return self.layers[self.active_layer].surface
 
@@ -210,6 +179,40 @@ class Canvas:
             if self._get_active_surface().get_at((x, y)) == target_color:
                 self._get_active_surface().set_at((x, y), fill_color)
                 stack.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
+    
+    @update_display
+    def add_layer(self, name: str) -> None:
+        if name in self.layers: 
+            return
+        new_layer = Layer(name, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.layers[name] = new_layer
+        self.layers_order.append(name)
+
+    @update_display
+    def remove_layer(self, name: str) -> None:
+        if name in self.layers and name != "base":
+            del self.layers[name]
+            self.layers_order.remove(name)
+            # Reset active layer if needed.
+            if self.active_layer == name:
+                self.active_layer = "base"
+
+    @update_display
+    def set_layer_visibility(self, name: str, visibility: float) -> None:
+        """
+        Sets the visibility of a layer using a value between 0 (invisible) and 1 (fully visible).
+        """
+        if name not in self.layers:
+            raise ValueError(f"Layer '{name}' does not exist.")
+        
+        layer = self.layers[name]
+        layer.visible = visibility > 0  # Treat visibility > 0 as "visible"
+        layer.surface.set_alpha(int(visibility * 255))  # Scale visibility to alpha (0-255)
+        self._composite_layers()  # Re-composite layers to reflect the change
+
+    def switch_active_layer(self, name: str) -> None:
+        if name in self.layers:
+            self.active_layer = name
 
     def export(self, filename: str) -> bool:
         try:
