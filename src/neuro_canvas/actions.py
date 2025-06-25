@@ -740,7 +740,7 @@ class AddLayerAction(AbstractAction):
         layer_name = data["name"]
         canvas = Canvas()
         if layer_name in canvas.layers:
-            return True, f"Layer '{layer_name}' already exists."
+            return False, f"Layer '{layer_name}' already exists."
         canvas.add_layer(layer_name)
         return True, f"Added layer: {layer_name}"
 
@@ -809,6 +809,8 @@ class SetLayerVisibilityAction(AbstractAction):
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
+        if layer_name == "background":
+            return False, f"Can't change background layer visibility"
         visibility = data["visibility"]
         try:
             Canvas().set_layer_visibility(layer_name, visibility)
@@ -844,7 +846,9 @@ class SwitchActiveLayerAction(AbstractAction):
         layer_name = data["name"]
         canvas = Canvas()
         if layer_name not in canvas.layers:
-            return True, f"Layer '{layer_name}' does not exist."
+            return False, f"Layer '{layer_name}' does not exist."
+        if layer_name == "background":
+            return False, f"Cannot switch to layer '{layer_name}'."
         canvas.switch_active_layer(layer_name)
         return True, f"Switched active layer to: {layer_name}"
 

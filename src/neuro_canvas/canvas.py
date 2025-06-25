@@ -138,9 +138,8 @@ class Canvas:
         # Set background only on the "background" layer.
         self.layers["background"].surface.fill(color)
 
-        for action in self.actions:
-            if action.func.__name__ not in ("set_background", "clear_canvas"):
-                action()
+        if self.actions.func.__name__ not in ("set_background", "clear_canvas"):
+            self.actions()
 
     @record_action
     def set_brush_color(self, color: pygame.Color) -> None:
@@ -153,12 +152,12 @@ class Canvas:
     @update_display
     @record_action
     def draw_line(self, start_pos: Coordinate, end_pos: Coordinate) -> None:
-        pygame.draw.line(self.screen, self.brush_color, start_pos, end_pos)
+        pygame.draw.line(self._get_active_surface(), self.brush_color, start_pos, end_pos)
 
     @update_display
     @record_action
     def draw_lines(self, points: List[Coordinate], closed: bool) -> None:
-        pygame.draw.lines(self.screen, self.brush_color, closed, points)
+        pygame.draw.lines(self._get_active_surface(), self.brush_color, closed, points)
 
     @update_display
     @record_action
@@ -168,7 +167,7 @@ class Canvas:
     @update_display
     @record_action
     def draw_circle(self, center: Coordinate, radius: int) -> None:
-        gfxdraw.circle(self.screen, center[0], center[1], radius, self.brush_color)
+        gfxdraw.circle(self._get_active_surface(), center[0], center[1], radius, self.brush_color)
 
     @update_display
     @record_action
@@ -193,7 +192,7 @@ class Canvas:
             for angle in rotated_angles
         ]
         # Draw lines between the vertices to form the triangle.
-        pygame.draw.lines(self.screen, self.brush_color, True, vertices)
+        pygame.draw.lines(self._get_active_surface(), self.brush_color, True, vertices)
 
     @update_display
     @record_action
