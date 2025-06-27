@@ -772,9 +772,9 @@ class RemoveLayerAction(AbstractAction):
         layer_name = data["name"]
         canvas = Canvas()
         if layer_name not in canvas.layers:
-            return True, f"Layer '{layer_name}' does not exist."
+            return False, f"Layer '{layer_name}' does not exist."
         if layer_name in ["base", "background"]:
-            return True, f"Cannot remove '{layer_name}' layer."
+            return False, f"Cannot remove '{layer_name}' layer."
         canvas.remove_layer(layer_name)
         return True, f"Removed layer: {layer_name}"
 

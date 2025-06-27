@@ -107,9 +107,6 @@ class Canvas:
         # Set background only on the "background" layer.
         self.layers["background"].surface.fill(color)
 
-        if self.actions.func.__name__ not in ("set_background", "clear_canvas"):
-            self.actions()
-
     @record_action
     def set_brush_color(self, color: pygame.Color) -> None:
         self.brush_color = color
