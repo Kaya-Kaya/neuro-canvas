@@ -557,27 +557,27 @@ class SetCustomBackgroundColorAction(AbstractAction):
 
         return True, f"Set background color to {color}"
 
-class UndoAction(AbstractAction):
-    @property
-    @override
-    def name(self) -> str:
-        return "undo"
+# class UndoAction(AbstractAction):
+#     @property
+#     @override
+#     def name(self) -> str:
+#         return "undo"
 
-    @property
-    @override
-    def desc(self) -> str:
-        return "Undoes the last change."
+#     @property
+#     @override
+#     def desc(self) -> str:
+#         return "Undoes the last change."
 
-    @property
-    @override
-    def schema(self) -> Dict[str, object]:
-        return {}
+#     @property
+#     @override
+#     def schema(self) -> Dict[str, object]:
+#         return {}
 
-    @override
-    async def perform_action(self, data: Optional[dict]) -> Tuple[bool, Optional[str]]:
-        Canvas().undo()
+#     @override
+#     async def perform_action(self, data: Optional[dict]) -> Tuple[bool, Optional[str]]:
+#         Canvas().undo()
 
-        return True, f"Performed undo"
+#         return True, f"Performed undo"
 
 class DrawRectangleAction(AbstractAction):
     @property
@@ -714,12 +714,12 @@ class AddLayerAction(AbstractAction):
     @override
     def name(self) -> str:
         return "add_layer"
-    
+
     @property
     @override
     def desc(self) -> str:
         return "Adds a new layer with the specified name."
-    
+
     @property
     @override
     def schema(self) -> Dict[str, object]:
@@ -730,7 +730,7 @@ class AddLayerAction(AbstractAction):
                 "name": {"type": "string"}
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
@@ -746,12 +746,12 @@ class RemoveLayerAction(AbstractAction):
     @override
     def name(self) -> str:
         return "remove_layer"
-    
+
     @property
     @override
     def desc(self) -> str:
         return "Removes the specified layer (except the base or background layers)."
-    
+
     @property
     @override
     def schema(self) -> Dict[str, object]:
@@ -762,7 +762,7 @@ class RemoveLayerAction(AbstractAction):
                 "name": {"type": "string"}
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
@@ -780,12 +780,12 @@ class SetLayerVisibilityAction(AbstractAction):
     @override
     def name(self) -> str:
         return "set_layer_visibility"
-    
+
     @property
     @override
     def desc(self) -> str:
         return "Sets the visibility of the specified layer using a value between 0 (invisible) and 1 (fully visible)."
-    
+
     @property
     @override
     def schema(self) -> Dict[str, object]:
@@ -801,7 +801,7 @@ class SetLayerVisibilityAction(AbstractAction):
                 }
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
@@ -820,12 +820,12 @@ class SwitchActiveLayerAction(AbstractAction):
     @override
     def name(self) -> str:
         return "switch_active_layer"
-    
+
     @property
     @override
     def desc(self) -> str:
         return "Switches the active layer to the specified layer."
-    
+
     @property
     @override
     def schema(self) -> Dict[str, object]:
@@ -836,7 +836,7 @@ class SwitchActiveLayerAction(AbstractAction):
                 "name": {"type": "string"}
             }
         }
-    
+
     @override
     async def perform_action(self, data: Optional[Dict]) -> Tuple[bool, Optional[str]]:
         assert data is not None, "'data' was expected but was set to None"
