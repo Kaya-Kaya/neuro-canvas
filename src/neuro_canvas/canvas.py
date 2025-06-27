@@ -211,9 +211,5 @@ class Canvas:
         if name in self.layers:
             self.active_layer = name
 
-    def export(self, filename: str) -> bool:
-        try:
-            pygame.image.save(self.screen, f"{filename}.png")
-            return True
-        except pygame.error as e:
-            return False
+    def export(self, filename: str) -> None:
+        pygame.image.save(self.screen, f"{filename}.png")

@@ -687,9 +687,7 @@ class ExportAction(AbstractAction):
     @property
     @override
     def desc(self) -> str:
-        return (
-            "Saves your drawing as a PNG."
-        )
+        return "Saves your drawing as a PNG. Do not include a .png extension when using this action."
 
     @property
     @override
@@ -705,12 +703,11 @@ class ExportAction(AbstractAction):
         assert data, "'data' was expected but was set to None"
         filename = data["filename"]
 
-        successful = Canvas().export(filename)
-
-        if successful:
+        try:
+            Canvas().export(filename)
             return True, f"Drawing saved as {filename}.png"
-        else:
-            return False, f"Saving failed. '{filename}' is likely not a valid filename."
+        except pygame.error as e:
+            return False, f"Saving failed. '{filename}' is likely not a valid filename. Error: {str(e)}"
 
 class AddLayerAction(AbstractAction):
     @property
