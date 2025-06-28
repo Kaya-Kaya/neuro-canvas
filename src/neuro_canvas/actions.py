@@ -557,27 +557,28 @@ class SetCustomBackgroundColorAction(AbstractAction):
 
         return True, f"Set background color to {color}"
 
-# class UndoAction(AbstractAction):
-#     @property
-#     @override
-#     def name(self) -> str:
-#         return "undo"
+class UndoAction(AbstractAction):
+    @property
+    @override
+    def name(self) -> str:
+        return "undo"
 
-#     @property
-#     @override
-#     def desc(self) -> str:
-#         return "Undoes the last change."
+    @property
+    @override
+    def desc(self) -> str:
+        return "Undoes the last change."
 
-#     @property
-#     @override
-#     def schema(self) -> Dict[str, object]:
-#         return {}
+    @property
+    @override
+    def schema(self) -> Dict[str, object]:
+        return {}
 
-#     @override
-#     async def perform_action(self, data: Optional[dict]) -> Tuple[bool, Optional[str]]:
-#         Canvas().undo()
-
-#         return True, f"Performed undo"
+    @override
+    async def perform_action(self, data: Optional[dict]) -> Tuple[bool, Optional[str]]:
+        if Canvas().undo():
+            return True, f"Performed undo"
+        else:
+            return False, "There is nothing to undo"
 
 class DrawRectangleAction(AbstractAction):
     @property
@@ -736,7 +737,7 @@ class AddLayerAction(AbstractAction):
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
         canvas = Canvas()
-        if layer_name in canvas.layers:
+        if canvas.layer_exists(layer_name):
             return False, f"Layer '{layer_name}' already exists."
         canvas.add_layer(layer_name)
         return True, f"Added layer: {layer_name}"
@@ -768,7 +769,7 @@ class RemoveLayerAction(AbstractAction):
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
         canvas = Canvas()
-        if layer_name not in canvas.layers:
+        if not canvas.layer_exists(layer_name):
             return False, f"Layer '{layer_name}' does not exist."
         if layer_name in ["base", "background"]:
             return False, f"Cannot remove '{layer_name}' layer."
@@ -842,7 +843,7 @@ class SwitchActiveLayerAction(AbstractAction):
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
         canvas = Canvas()
-        if layer_name not in canvas.layers:
+        if not canvas.layer_exists(layer_name):
             return False, f"Layer '{layer_name}' does not exist."
         if layer_name == "background":
             return False, f"Cannot switch to layer '{layer_name}'."
