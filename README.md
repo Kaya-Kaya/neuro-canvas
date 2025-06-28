@@ -26,6 +26,12 @@ This is a basic painting app built in [Pygame](https://www.pygame.org/docs/) tha
 - Curve
 - Triangle (equilateral only)
 
+### Layers
+- Add layer
+- Remove layer
+- Switch active layer
+- Set layer visibility (supports transparency)
+
 ### Additional actions
 
 - Bucket fill
