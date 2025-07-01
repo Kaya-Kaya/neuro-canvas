@@ -6,7 +6,8 @@ import pygame
 import math
 
 from functools import partial
-from typing import Callable, Tuple, Any, List, Dict
+from typing import Any
+from collections.abc import Callable
 
 from .constants import *
 
@@ -19,7 +20,7 @@ class Layer:
         # By default, a layer is visible
         self.visible = True
 
-Coordinate = Tuple[int, int]
+Coordinate = tuple[int, int]
 
 class Canvas:
     class Attributes():
@@ -27,8 +28,8 @@ class Canvas:
             self.brush_color: pygame.Color = colors["black"]
             self.brush_width: int = 1
             self.active_layer: str = "base"
-            self.layers: Dict[str, Layer] = {}
-            self.layers_order: List[str] = []
+            self.layers: dict[str, Layer] = {}
+            self.layers_order: list[str] = []
 
     def __new__(cls):
         if not hasattr(cls, 'instance'):
@@ -41,7 +42,7 @@ class Canvas:
 
         self._attributes = Canvas.Attributes()
 
-        self._actions: List[Callable] = []
+        self._actions: list[partial] = []
         self._screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Create a dedicated "background" layer followed by a "base" layer for drawings.
@@ -51,8 +52,8 @@ class Canvas:
         self.clear_canvas()
 
         # Add marker between setup and user actions
-        marker = lambda: None
-        marker.__name__ = "__finish_setup__"
+        marker = partial(lambda: None)
+        marker.func.__name__ = "finish_setup"
         self._actions.append(marker)
 
         pygame.display.set_caption(APP_NAME)
@@ -88,8 +89,11 @@ class Canvas:
             Callable: A decorator function that wraps the target method.
         """
         def inner(fn: Callable) -> Callable:
+            if fn.__name__ == "finish_setup":
+                raise ValueError("Cannot have an action named finish_setup, that name is reserved")
+
             def wrapper(self: 'Canvas', *args, **kwargs) -> Any:
-                fn(self, *args, **kwargs)
+                return_val = fn(self, *args, **kwargs)
 
                 if record:
                     self._actions.append(partial(fn, self, *args, **kwargs))
@@ -98,13 +102,15 @@ class Canvas:
                     self._composite_layers()
                     pygame.display.update()
 
+                return return_val
+
             return wrapper
 
         return inner
 
     @action(record=False)
     def undo(self) -> bool:
-        if self._actions[-1].__name__ == "__finish_setup__":
+        if self._actions[-1].func.__name__ == "finish_setup":
             return False
 
         # Remove last action
@@ -143,11 +149,11 @@ class Canvas:
         pygame.draw.line(self._get_active_surface(), self._attributes.brush_color, start_pos, end_pos)
 
     @action()
-    def draw_lines(self, points: List[Coordinate], closed: bool) -> None:
+    def draw_lines(self, points: list[Coordinate], closed: bool) -> None:
         pygame.draw.lines(self._get_active_surface(), self._attributes.brush_color, closed, points)
 
     @action()
-    def draw_curve(self, points: List[Coordinate], steps: int) -> None:
+    def draw_curve(self, points: list[Coordinate], steps: int) -> None:
         gfxdraw.bezier(self._get_active_surface(), points, steps, self._attributes.brush_color)
 
     @action()

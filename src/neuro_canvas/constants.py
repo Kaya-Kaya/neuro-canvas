@@ -1,6 +1,6 @@
 """Constants - Neuro's Canvas global constants."""
 
-from typing import Final, Dict
+from typing import Final
 
 import pygame
 
@@ -11,7 +11,7 @@ SCREEN_HEIGHT: Final = 500
 
 COLOR_MAX_VAL: Final = 255
 
-colors: Final[Dict[str, pygame.Color]] = {
+colors: Final[dict[str, pygame.Color]] = {
     "black": pygame.Color(0, 0, 0),
     "white": pygame.Color(255, 255, 255),
     "red": pygame.Color(255, 0, 0),
