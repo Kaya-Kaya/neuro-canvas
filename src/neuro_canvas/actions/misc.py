@@ -98,7 +98,7 @@ class ExportAction(AbstractAction):
                     "enum": ["bmp", "tga", "png", "jpg"]
                 }
             },
-            "required": ["filename", "filetype"]
+            "required": ["filename"]
         }
 
     @override
