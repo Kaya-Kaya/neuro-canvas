@@ -25,7 +25,7 @@ Coordinate = tuple[int, int]
 class Canvas:
     class Attributes():
         def __init__(self):
-            self.brush_color: pygame.Color = colors["black"]
+            self.brush_color: pygame.Color = COLORS["black"]
             self.brush_width: int = 1
             self.active_layer: str = "base"
             self.layers: dict[str, Layer] = {}
@@ -64,7 +64,7 @@ class Canvas:
 
     def _composite_layers(self) -> None:
         # Clear the main screen to the default background
-        self._screen.fill(colors["white"])
+        self._screen.fill(COLORS["white"])
         for layer_name in self._attributes.layers_order:
             layer = self._attributes.layers[layer_name]
             if layer.visible:
@@ -129,7 +129,7 @@ class Canvas:
         for layer in self._attributes.layers.values():
             layer.surface.fill((0, 0, 0, 0))  # Clear to transparent
         # Fill the "background" layer with white by default.
-        self._attributes.layers["background"].surface.fill(colors["white"])
+        self._attributes.layers["background"].surface.fill(COLORS["white"])
 
     @action()
     def set_background(self, color: pygame.Color) -> None:

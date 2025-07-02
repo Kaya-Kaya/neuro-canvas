@@ -56,7 +56,7 @@ async def run() -> None:
             if neuro_component.not_connected:
                 logger.error(CONNECTION_FAILURE_MSG)
                 return
-            
+
             await neuro_component.send_startup_command()
 
             await neuro_component.send_context(STARTUP_MESSAGE)
@@ -66,13 +66,13 @@ async def run() -> None:
             await neuro_component.register_neuro_actions([(action.get_action(), action.get_handler()) for action in all_actions])
 
             running = True
-  
+
             while running:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
                 await trio.sleep(0)  # Yield control to the event loop
-            
+
         except (KeyboardInterrupt, trio.Cancelled):
             logger.info(SHUTDOWN_MSG)
             return
