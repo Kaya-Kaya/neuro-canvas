@@ -1,3 +1,5 @@
+"""Actions - Actions to let Neuro interact with the canvas."""
+
 import importlib
 import pkgutil
 from pathlib import Path
