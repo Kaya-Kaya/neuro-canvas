@@ -68,7 +68,7 @@ class AbstractAction(ABC):
     @property
     @abstractmethod
     def schema(self) -> dict[str, object]:
-        return {}
+        pass
 
     def get_action(self) -> Action:
         """

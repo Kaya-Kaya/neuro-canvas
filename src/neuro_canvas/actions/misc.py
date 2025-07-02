@@ -6,6 +6,8 @@ from ..canvas import Canvas
 from ..constants import *
 from ._abc import AbstractAction, override
 
+DEFAULT_FILETYPE: str = "jpg"
+
 class BucketFillAction(AbstractAction):
     @property
     @override
@@ -79,24 +81,34 @@ class ExportAction(AbstractAction):
     @property
     @override
     def desc(self) -> str:
-        return "Saves your drawing as a PNG. Do not include a .png extension when using this action."
+        return (
+            "Saves your drawing. Do not include the file extension in the filename when using this action. "
+            f"Defaults to {DEFAULT_FILETYPE} when filetype is not provided."
+        )
 
     @property
     @override
     def schema(self) -> dict[str, object]:
         return {
             "type": "object",
-            "properties": { "filename": { "type": "string" } },
-            "required": ["filename"]
+            "properties": {
+                "filename": { "type": "string" },
+                "filetype": {
+                    "type": "string",
+                    "enum": ["bmp", "tga", "png", "jpg"]
+                }
+            },
+            "required": ["filename", "filetype"]
         }
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
         filename = data["filename"]
+        filetype = data["filetype"]
 
         try:
-            Canvas().export(filename)
-            return True, f"Drawing saved as {filename}.png"
+            Canvas().export(filename, filetype)
+            return True, f"Drawing saved as {filename}.{filetype}"
         except pygame.error as e:
             return False, f"Saving failed. '{filename}' is likely not a valid filename. Error: {str(e)}"

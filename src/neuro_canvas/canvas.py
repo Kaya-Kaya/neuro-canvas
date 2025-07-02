@@ -237,5 +237,5 @@ class Canvas:
     def layer_exists(self, layer_name: str) -> bool:
         return layer_name in self._attributes.layers
 
-    def export(self, filename: str) -> None:
-        pygame.image.save(self._screen, f"{filename}.png")
+    def export(self, filename: str, filetype: str) -> None:
+        pygame.image.save(self._screen, f"{filename}.{filetype}")
