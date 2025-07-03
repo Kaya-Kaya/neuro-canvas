@@ -1,7 +1,7 @@
 from .load import config
 from typing import Any
 
-settings = config["settings"]
+settings = config.get("settings")
 
 def get_setting(setting: str) -> (type[ValueError] | Any):
     req_set = settings.get(setting)

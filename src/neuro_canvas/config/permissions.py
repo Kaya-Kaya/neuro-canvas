@@ -8,7 +8,7 @@ PermissionTypes = Literal[
     "colour"
 ]
 
-permissions = config["permissions"]
+permissions = config.get("permissions")
 
 def check_permission(permission: PermissionTypes) -> bool:
     req_perm = permissions.get(permission)
