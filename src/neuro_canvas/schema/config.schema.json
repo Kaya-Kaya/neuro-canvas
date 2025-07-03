@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "configVersion": {
+      "type": "integer"
+    },
+    "settings": {
+      "type": "object",
+      "description": "Settings to control the behaviour of the canvas.",
+      "properties": {
+        "allowed_save_file_formats": {
+          "type": "array",
+          "description": "File formats that Neuro is allowed to save in.",
+          "items": [
+            {
+              "type": "string",
+              "enum": ["png", "jpg", "bmp", "tga"]
+            }
+          ],
+          "additionalItems": true,
+          "uniqueItems": true
+        },
+        "canvas_size": {
+          "description": "Canvas size on startup. Setting either unit to 0 will prompt Neuro to input her decision on that dimension.",
+          "type": "object",
+          "properties": {
+            "height": {
+              "description": "Canvas height",
+              "type": "integer",
+              "minimum": 0
+            },
+            "width": {
+              "description": "Canvas width",
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "height",
+            "width"
+          ]
+        }
+      }
+    },
+    "permisssions": {
+      "description": "Permissions that dictate what Neuro can do.",
+      "type": "object",
+      "properties": {
+        "layer": {
+          "description": "Whether to grant access to layers.",
+          "type": "boolean"
+        },
+        "misc": {
+          "description": "Whether to grant access to various miscellaneous actions not covered by the other permissions.",
+          "type": "boolean"
+        },
+        "shapes": {
+          "description": "Whether to allow her to draw with shape presets (such as circles, triangles, etc...)",
+          "type": "boolean"
+        },
+        "colour": {
+          "description": "Whether to allow her to change the colour of her brush.",
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "required": [
+    "configVersion"
+  ]
+}
