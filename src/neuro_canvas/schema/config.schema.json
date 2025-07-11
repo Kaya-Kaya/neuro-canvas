@@ -3,6 +3,7 @@
   "type": "object",
   "properties": {
     "configVersion": {
+      "description": "The version of the config. It can be used to tell Neuro's Canvas how to read the config.",
       "type": "integer"
     },
     "settings": {
@@ -36,6 +37,7 @@
               "minimum": 0
             }
           },
+          "additionalProperties": false,
           "required": [
             "height",
             "width"
@@ -46,6 +48,7 @@
     "permisssions": {
       "description": "Permissions that dictate what Neuro can do.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "layer": {
           "description": "Whether to grant access to layers.",

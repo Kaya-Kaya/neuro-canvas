@@ -4,7 +4,7 @@ from jsonschema import validate, ValidationError, SchemaError
 
 config_path = Path.cwd() / 'config.json'
 # Schema is part of the app - get path relative to this file
-schema_path = Path(__file__).parent / 'schema/config_schema.json'
+schema_path = Path(__file__).parent / '..' / 'schema/config.schema.json'
 
 error_suffix: str = "\nSomeone tell the maintainers at https://github.com/Kaya-Kaya/neuro-canvas that there's an issue with their app!"
 

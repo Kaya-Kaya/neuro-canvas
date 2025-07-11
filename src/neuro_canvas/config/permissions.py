@@ -1,4 +1,4 @@
-from .load import config
+from .load import config, default_config
 from typing import Literal
 
 PermissionTypes = Literal[
@@ -9,6 +9,8 @@ PermissionTypes = Literal[
 ]
 
 permissions = config.get("permissions")
+if permissions is None:
+    permissions = default_config["settings"]
 
 def check_permission(permission: PermissionTypes) -> bool:
     req_perm = permissions.get(permission)
