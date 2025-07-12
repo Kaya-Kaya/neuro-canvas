@@ -1,53 +1,8 @@
-from typing import Optional, Any
-from collections.abc import Callable, Coroutine
-from neuro_api.api import NeuroAction
-from ..config.permissions import check_permission
+from typing import Optional
 from ..canvas import Canvas
-from ._abc import AbstractAction, override, handle_json
-from abc import abstractmethod
+from ._abc import AbstractAction, override
 
-class AbstractLayerAction(AbstractAction):
-    @property
-    @override
-    def name(self) -> str:
-        pass
-
-    @property
-    @override
-    def desc(self) -> str:
-        pass
-
-    @property
-    @override
-    def schema(self) -> dict[str, object]:
-        pass
-
-    """
-    Abstract action class specifically for layer-related actions.
-    Automatically checks for 'layers' permission before executing.
-    """
-    def get_handler(self) -> Callable[[NeuroAction], Coroutine[Any, Any, tuple[bool, Optional[str]]]]:
-        """
-        Returns a handler that checks 'layers' permission before executing the action.
-        """
-        async def permission_checked_handler(action: NeuroAction) -> tuple[bool, Optional[str]]:
-            # Check permission first
-            if not check_permission("layers"):
-                return False, "Layers permission denied"
-            
-            # If permission check passes, use the regular JSON handler
-            return await handle_json(self.perform_action, self.schema)(action)
-        
-        return permission_checked_handler
-    
-    @override
-    async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
-        """
-        Carries out the action.
-        """
-        pass
-
-class AddLayerAction(AbstractLayerAction):
+class AddLayerAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
@@ -68,6 +23,11 @@ class AddLayerAction(AbstractLayerAction):
                 "name": {"type": "string"}
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return 'layers'
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -79,7 +39,7 @@ class AddLayerAction(AbstractLayerAction):
         canvas.add_layer(layer_name)
         return True, f"Added layer: {layer_name}"
 
-class RemoveLayerAction(AbstractLayerAction):
+class RemoveLayerAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
@@ -100,6 +60,11 @@ class RemoveLayerAction(AbstractLayerAction):
                 "name": {"type": "string"}
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return 'layers'
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -113,7 +78,7 @@ class RemoveLayerAction(AbstractLayerAction):
         canvas.remove_layer(layer_name)
         return True, f"Removed layer: {layer_name}"
 
-class SetLayerVisibilityAction(AbstractLayerAction):
+class SetLayerVisibilityAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
@@ -139,6 +104,11 @@ class SetLayerVisibilityAction(AbstractLayerAction):
                 }
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return 'layers'
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -153,7 +123,7 @@ class SetLayerVisibilityAction(AbstractLayerAction):
         except ValueError as e:
             return False, str(e)
 
-class SwitchActiveLayerAction(AbstractLayerAction):
+class SwitchActiveLayerAction(AbstractAction):
     @property
     @override
     def name(self) -> str:
@@ -174,6 +144,11 @@ class SwitchActiveLayerAction(AbstractLayerAction):
                 "name": {"type": "string"}
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return 'layers'
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:

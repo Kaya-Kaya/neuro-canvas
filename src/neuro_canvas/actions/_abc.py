@@ -53,6 +53,8 @@ def handle_json(
             return False, f"Unexpected error: {str(e)}"
     return wrapper
 
+class ActionWithPermission(Action):
+    permission: str
 
 class AbstractAction(ABC):
     @property
@@ -70,11 +72,16 @@ class AbstractAction(ABC):
     def schema(self) -> dict[str, object]:
         pass
 
+    @property
+    @abstractmethod
+    def permission(self) -> str:
+        pass
+
     def get_action(self) -> Action:
         """
         Returns an Action object containing the name, description, and schema of the action.
         """
-        return Action(self.name, self.desc, self.schema)
+        return ActionWithPermission(self.name, self.desc, self.schema, self.permission)
 
     def get_handler(self) -> Callable[[NeuroAction], Coroutine[Any, Any, tuple[bool, Optional[str]]]]:
         return handle_json(self.perform_action, self.schema)

@@ -18,7 +18,16 @@ default_config: object = {
             # Setting a value to 0 will prompt Neuro to input her decision
         },
     },
-    "permissions": {}
+    "permissions": {
+        "draw": {
+            "line": True,
+            "line_sequence": True,
+            "curve": True,
+            "circle": True,
+            "triangle": True,
+            "rectangle": True,
+        }
+    }
 }
 
 # Don't initialize config - let it be undefined until explicitly set

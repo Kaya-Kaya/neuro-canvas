@@ -40,6 +40,11 @@ class BucketFillAction(AbstractAction):
             },
             "required": ["x", "y"]
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "misc.bucket"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -64,6 +69,11 @@ class UndoAction(AbstractAction):
     @override
     def schema(self) -> dict[str, object]:
         return {}
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "misc.undo"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -100,6 +110,11 @@ class ExportAction(AbstractAction):
             },
             "required": ["filename"]
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "misc.export"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:

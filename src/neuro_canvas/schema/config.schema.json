@@ -4,7 +4,7 @@
   "properties": {
     "configVersion": {
       "description": "The version of the config. It can be used to tell Neuro's Canvas how to read the config.",
-      "type": "integer"
+      "type": "number"
     },
     "settings": {
       "type": "object",
@@ -50,19 +50,59 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "layer": {
-          "description": "Whether to grant access to layers.",
+        "layers": {
+          "description": "Whether to grant access to layering actions. Includes background layer.",
           "type": "boolean"
         },
         "misc": {
-          "description": "Whether to grant access to various miscellaneous actions not covered by the other permissions.",
-          "type": "boolean"
+          "description": "Whether to grant access to various miscellaneous actions.",
+          "type": "object",
+          "properties": {
+            "bucket": {
+              "type": "boolean",
+              "description": "Whether to allow Neuro to cover a section with a specific colour."
+            },
+            "undo": {
+              "type": "boolean",
+              "description": "Whether to allow Neuro to undo her mistakes."
+            },
+            "export": {
+              "type": "boolean",
+              "description": "Whether to allow Neuro to save her file. To restrict the list of file types she can save, refer to settings.allowed_save_file_formats"
+            }
+          }
         },
-        "shapes": {
-          "description": "Whether to allow her to draw with shape presets (such as circles, triangles, etc...)",
-          "type": "boolean"
+        "draw": {
+          "description": "Whether to allow her to draw with various presets.",
+          "type": "object",
+          "properties": {
+            "line": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a straight line."
+            },
+            "line_sequence": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a sequence of straight lines."
+            },
+            "curve": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a curve."
+            },
+            "circle": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a circle."
+            },
+            "triangle": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a triangle."
+            },
+            "rectangle": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a rectangle."
+            }
+          }
         },
-        "colour": {
+        "brush": {
           "description": "Whether to allow her to change the colour of her brush.",
           "type": "boolean"
         }

@@ -28,6 +28,11 @@ class SetBrushColorAction(AbstractAction):
                 },
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "brush"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -86,6 +91,11 @@ class SetCustomBrushColorAction(AbstractAction):
                 },
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "brush"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
