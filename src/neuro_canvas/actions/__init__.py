@@ -14,8 +14,15 @@ for module in pkgutil.iter_modules([Path(__file__).parent]):
         importlib.import_module(f".{module.name}", package=__name__)
 
 for action_class in AbstractAction.__subclasses__():
-    if check_permission(action_class.permission) == True:
-        all_actions.append(action_class())
+    try:
+        # Instantiate the action class
+        action_instance = action_class()
+
+        # Check permission using the property method
+        if check_permission(action_instance.permission):
+            all_actions.append(action_instance)
+    except AttributeError as e:
+        raise RuntimeError(f"An error happened during runtime: {e}")
 
 # todo:
 # - Make this check for the respective permission within config.json

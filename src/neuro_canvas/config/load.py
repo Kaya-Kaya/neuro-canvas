@@ -1,12 +1,13 @@
 from pathlib import Path
 import json
 from jsonschema import validate, ValidationError, SchemaError
+from ..constants import error_suffix
 
 config_path = Path.cwd() / 'config.json'
 # Schema is part of the app - get path relative to this file
 schema_path = Path(__file__).parent / '..' / 'schema/config.schema.json'
-
-error_suffix: str = "\nSomeone tell the maintainers at https://github.com/Kaya-Kaya/neuro-canvas that there's an issue with their app!"
+# Supported config versions
+supported_config_versions = [1]
 
 default_config: object = {
     "configVersion": 1,
@@ -44,6 +45,10 @@ try:
     
     # Validate config against schema
     validate(loaded_config, schema)
+
+    # Validate config version
+    if loaded_config.configVersion not in supported_config_versions:
+        raise KeyError("Config version not supported!")
     
     # Only assign if validation passes
     config = loaded_config
@@ -57,7 +62,7 @@ except FileNotFoundError as e:
         
 except ValidationError as e:
     raise ValueError(f"Config validation failed! {e.message}\nDouble-check your config file!")
-    
+
 except SchemaError as e:
     raise RuntimeError(f"Validation schema for config file has an issue! {e.message}" + error_suffix)
     
