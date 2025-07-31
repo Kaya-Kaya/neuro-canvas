@@ -9,16 +9,15 @@
     "settings": {
       "type": "object",
       "description": "Settings to control the behaviour of the canvas.",
+      "additionalProperties": false,
       "properties": {
         "allowed_save_file_formats": {
           "type": "array",
           "description": "File formats that Neuro is allowed to save in.",
-          "items": [
-            {
-              "type": "string",
-              "enum": ["png", "jpg", "bmp", "tga"]
-            }
-          ],
+          "items": {
+            "type": "string",
+            "enum": ["png", "jpg", "bmp", "tga"]
+          },
           "additionalItems": true,
           "uniqueItems": true
         },
@@ -45,14 +44,28 @@
         }
       }
     },
-    "permisssions": {
+    "permissions": {
       "description": "Permissions that dictate what Neuro can do.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "layers": {
-          "description": "Whether to grant access to layering actions. Includes background layer.",
-          "type": "boolean"
+          "description": "Whether to grant access to layering actions.",
+          "type": "object",
+          "properties": {
+            "background": {
+              "type": "boolean",
+              "description": "Grant Neuro access to the background layer."
+            },
+            "base": {
+              "type": "boolean",
+              "description": "Grant Neuro access to the base layer"
+            },
+            "custom": {
+              "type": "boolean",
+              "description": "Let Neuro create and modify her own layers."
+            }
+          }
         },
         "misc": {
           "description": "Whether to grant access to various miscellaneous actions.",
