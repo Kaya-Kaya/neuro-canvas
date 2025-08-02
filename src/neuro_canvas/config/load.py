@@ -1,7 +1,7 @@
 from pathlib import Path
 import json
 from jsonschema import validate, ValidationError, SchemaError
-from ..constants import error_suffix
+from ..constants import ERROR_SUFFIX
 
 config_path = Path.cwd() / 'config.json'
 # Schema is part of the app - get path relative to this file
@@ -38,7 +38,7 @@ try:
     validate(loaded_config, schema)
 
     # Validate config version
-    if loaded_config.configVersion not in supported_config_versions:
+    if loaded_config["configVersion"] not in supported_config_versions:
         raise KeyError("Config version not supported!")
     
     # Only assign if validation passes
@@ -49,13 +49,13 @@ except FileNotFoundError as e:
         print(f"Config file not found: {config_path}\nProceeding with default configs...")
         config = default_config
     else:
-        raise RuntimeError(f"Schema file not found: {schema_path}" + error_suffix)
+        raise RuntimeError(f"Schema file not found: {schema_path}" + ERROR_SUFFIX)
         
 except ValidationError as e:
     raise ValueError(f"Config validation failed! {e.message}\nDouble-check your config file!")
 
 except SchemaError as e:
-    raise RuntimeError(f"Validation schema for config file has an issue! {e.message}" + error_suffix)
+    raise RuntimeError(f"Validation schema for config file has an issue! {e.message}" + ERROR_SUFFIX)
     
 except Exception as e:
     raise RuntimeError(f"An exception occurred while loading config.json! ({e})")
