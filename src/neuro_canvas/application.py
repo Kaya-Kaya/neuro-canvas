@@ -11,11 +11,11 @@ from typing import Final
 import trio
 from libcomponent.component import Event, ExternalRaiseManager
 
-from neuro_api.event import NeuroAPIComponent
+from neuro_api.trio_ws import TrioNeuroAPIComponent
 
-from .actions import all_actions
-from .canvas import Canvas
-from .constants import *
+from neuro_canvas.actions import all_actions
+from neuro_canvas.canvas import Canvas
+from neuro_canvas.constants import *
 
 # For compatibility with Python versions below 3.11, use the backported ExceptionGroup
 if sys.version_info < (3, 11):
@@ -32,6 +32,7 @@ CLEANUP_MSG: Final = "Cleanup complete"
 
 logger = logging.getLogger(__name__)
 
+
 async def run() -> None:
     """
     Main asynchronous function to run the app.
@@ -40,7 +41,7 @@ async def run() -> None:
 
     async with trio.open_nursery(strict_exception_groups=True) as nursery:
         manager = ExternalRaiseManager(APP_NAME, nursery)
-        neuro_component = NeuroAPIComponent("neuro_api", APP_NAME)
+        neuro_component = TrioNeuroAPIComponent("neuro_api", APP_NAME)
 
         try:
             manager.add_component(neuro_component)
@@ -81,8 +82,13 @@ async def run() -> None:
             pygame.quit()
             logger.info(CLEANUP_MSG)
 
+
 def start() -> None:
     try:
         trio.run(run)
     except ExceptionGroup as exc:
         traceback.print_exception(exc)
+
+
+if __name__ == "__main__":
+    start()
