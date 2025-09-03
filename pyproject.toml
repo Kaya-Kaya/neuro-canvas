@@ -16,7 +16,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "neuro_api~=1.0",
+    "neuro_api~=2.0.0",
     "pygame~=2.6",
     "jsonschema~=4.23",
     "typing-extensions>=4.0.0; python_version < '3.12'"
