@@ -5,11 +5,14 @@ import pygame
 
 import math
 
-from functools import partial
+from functools import partial, wraps
 from typing import Any
 from collections.abc import Callable
 
-from .constants import *
+from .constants import SCREEN_HEIGHT, SCREEN_WIDTH, APP_NAME, COLORS
+
+Coordinate = tuple[int, int]
+
 
 # New Layer class
 class Layer:
@@ -20,7 +23,6 @@ class Layer:
         # By default, a layer is visible
         self.visible = True
 
-Coordinate = tuple[int, int]
 
 class Canvas:
     class Attributes():
@@ -92,6 +94,7 @@ class Canvas:
             if fn.__name__ == "finish_setup":
                 raise ValueError("Cannot have an action named finish_setup, that name is reserved")
 
+            @wraps(fn)
             def wrapper(self: 'Canvas', *args, **kwargs) -> Any:
                 return_val = fn(self, *args, **kwargs)
 

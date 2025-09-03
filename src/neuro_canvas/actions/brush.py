@@ -1,8 +1,11 @@
 from typing import Optional
 
+from pygame import Color
+
 from ..canvas import Canvas
-from ..constants import *
+from ..constants import COLORS, COLOR_MAX_VAL
 from ._abc import AbstractAction, override
+
 
 class SetBrushColorAction(AbstractAction):
     @property
@@ -39,6 +42,7 @@ class SetBrushColorAction(AbstractAction):
         Canvas().set_brush_color(color)
 
         return True, f"Set brush color to {color}"
+
 
 class SetCustomBrushColorAction(AbstractAction):
     @property

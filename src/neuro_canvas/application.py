@@ -13,9 +13,9 @@ from libcomponent.component import Event, ExternalRaiseManager
 
 from neuro_api.trio_ws import TrioNeuroAPIComponent
 
-from neuro_canvas.actions import all_actions
-from neuro_canvas.canvas import Canvas
-from neuro_canvas.constants import *
+from .actions import all_actions
+from .canvas import Canvas
+from .constants import APP_NAME
 
 # For compatibility with Python versions below 3.11, use the backported ExceptionGroup
 if sys.version_info < (3, 11):
@@ -62,9 +62,10 @@ async def run() -> None:
 
             await neuro_component.send_context(STARTUP_MESSAGE)
 
-            Canvas() # Initialize canvas to have it appear on start-up
+            Canvas()  # Initialize canvas to have it appear on start-up
 
-            await neuro_component.register_neuro_actions([(action.get_action(), action.get_handler()) for action in all_actions])
+            await neuro_component.register_neuro_actions([(action.get_action(), action.get_handler())
+                                                          for action in all_actions])
 
             running = True
 

@@ -3,10 +3,11 @@ from typing import Optional
 import pygame
 
 from ..canvas import Canvas
-from ..constants import *
+from ..constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from ._abc import AbstractAction, override
 
 DEFAULT_FILETYPE: str = "jpg"
+
 
 class BucketFillAction(AbstractAction):
     @property
@@ -49,6 +50,7 @@ class BucketFillAction(AbstractAction):
         Canvas().bucket_fill((x, y))
         return True, f"Bucket filled at {(x, y)}"
 
+
 class UndoAction(AbstractAction):
     @property
     @override
@@ -68,9 +70,10 @@ class UndoAction(AbstractAction):
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
         if Canvas().undo():
-            return True, f"Performed undo"
+            return True, "Performed undo"
         else:
             return False, "There is nothing to undo"
+
 
 class ExportAction(AbstractAction):
     @property
@@ -92,7 +95,7 @@ class ExportAction(AbstractAction):
         return {
             "type": "object",
             "properties": {
-                "filename": { "type": "string" },
+                "filename": {"type": "string"},
                 "filetype": {
                     "type": "string",
                     "enum": ["bmp", "tga", "png", "jpg"]

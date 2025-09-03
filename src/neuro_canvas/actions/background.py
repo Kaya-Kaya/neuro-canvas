@@ -1,8 +1,11 @@
 from typing import Optional
 
+from pygame import Color
+
 from ..canvas import Canvas
-from ..constants import *
+from ..constants import COLORS, COLOR_MAX_VAL
 from ._abc import AbstractAction, override
+
 
 class SetBackgroundColorAction(AbstractAction):
     @property
@@ -39,6 +42,7 @@ class SetBackgroundColorAction(AbstractAction):
         Canvas().set_background(color)
 
         return True, f"Set background color to {color}"
+
 
 class SetCustomBackgroundColorAction(AbstractAction):
     @property
