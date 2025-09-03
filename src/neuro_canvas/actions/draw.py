@@ -58,6 +58,11 @@ class DrawLineAction(AbstractAction):
                 }
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "draw.line"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -115,6 +120,11 @@ class DrawLinesAction(AbstractAction):
             }
         }
 
+    @property
+    @override
+    def permission(self) -> str:
+        return "draw.line_sequence"
+
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
         assert data, "'data' was expected but was set to None"
@@ -166,6 +176,11 @@ class DrawCurveAction(AbstractAction):
                 }
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "draw.curve"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -218,6 +233,11 @@ class DrawCircleAction(AbstractAction):
                 }
             }
         }
+
+    @property
+    @override
+    def permission(self) -> str:
+        return "draw.circle"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -281,6 +301,11 @@ class DrawTriangleAction(AbstractAction):
                 }
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "draw.triangle"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -340,6 +365,11 @@ class DrawRectangleAction(AbstractAction):
                 },
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "draw.rectangle"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
