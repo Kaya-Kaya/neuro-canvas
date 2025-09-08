@@ -4,7 +4,7 @@ if sys.version_info >= (3, 12):
     from typing import override
 else:
     # For compatibility with Python versions below 3.12, use the backported override
-    from typing_extensions import override
+    from typing_extensions import override  # noqa: F401
 
 from typing import Optional, Any, Final
 from collections.abc import Callable, Coroutine
@@ -16,13 +16,12 @@ from neuro_api.api import NeuroAction
 import json
 from jsonschema import validate, ValidationError
 
-from ..constants import *
-
 import logging
 
 BEZIER_STEPS: Final = 4
 
 logger = logging.getLogger(__name__)
+
 
 def handle_json(
     action_function: Callable[[Optional[dict]], Coroutine[Any, Any, tuple[bool, Optional[str]]]],

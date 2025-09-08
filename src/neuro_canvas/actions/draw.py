@@ -1,10 +1,11 @@
 from typing import Optional, Final
 
 from ..canvas import Canvas
-from ..constants import *
+from ..constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from ._abc import AbstractAction, override
 
 BEZIER_STEPS: Final = 4
+
 
 class DrawLineAction(AbstractAction):
     @property
@@ -75,6 +76,7 @@ class DrawLineAction(AbstractAction):
 
         return True, f"Drew line from {start} to {end}"
 
+
 class DrawLinesAction(AbstractAction):
     @property
     @override
@@ -116,7 +118,7 @@ class DrawLinesAction(AbstractAction):
                     },
                     "minItems": 3
                 },
-                "closed": { "type": "boolean" }
+                "closed": {"type": "boolean"}
             }
         }
 
@@ -135,6 +137,7 @@ class DrawLinesAction(AbstractAction):
         Canvas().draw_lines(points, closed)
 
         return True, f"Drew a {"" if closed else "non-"}closed set of lines through {points}"
+
 
 class DrawCurveAction(AbstractAction):
     @property
@@ -192,6 +195,7 @@ class DrawCurveAction(AbstractAction):
 
         return True, f"Drew a curve through {points}"
 
+
 class DrawCircleAction(AbstractAction):
     @property
     @override
@@ -248,7 +252,8 @@ class DrawCircleAction(AbstractAction):
 
         Canvas().draw_circle(center, radius)
 
-        return True, f"Drew line at {center} with {radius = }"
+        return True, f"Drew line at {center} with {radius = }"  # noqa: E202
+
 
 class DrawTriangleAction(AbstractAction):
     @property
@@ -317,7 +322,9 @@ class DrawTriangleAction(AbstractAction):
 
         Canvas().draw_triangle(center, side_length, rotation)
 
-        return True, f"Drew triangle with center {center}, with side length {side_length}, and rotated {rotation} degrees."
+        return True, (f"Drew triangle with center {center}, with side length {side_length}, "
+                      f"and rotated {rotation} degrees.")
+
 
 class DrawRectangleAction(AbstractAction):
     @property
@@ -354,12 +361,12 @@ class DrawRectangleAction(AbstractAction):
                     "maximum": SCREEN_HEIGHT
                 },
                 "width": {
-                   "type": "integer",
+                    "type": "integer",
                     "minimum": 0,
                     "maximum": SCREEN_WIDTH
                 },
                 "height": {
-                   "type": "integer",
+                    "type": "integer",
                     "minimum": 0,
                     "maximum": SCREEN_WIDTH
                 },

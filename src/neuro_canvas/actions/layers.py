@@ -2,6 +2,7 @@ from typing import Optional
 from ..canvas import Canvas
 from ._abc import AbstractAction, override
 
+
 class AddLayerAction(AbstractAction):
     @property
     @override
@@ -38,6 +39,7 @@ class AddLayerAction(AbstractAction):
             return False, f"Layer '{layer_name}' already exists."
         canvas.add_layer(layer_name)
         return True, f"Added layer: {layer_name}"
+
 
 class RemoveLayerAction(AbstractAction):
     @property
@@ -78,6 +80,7 @@ class RemoveLayerAction(AbstractAction):
         canvas.remove_layer(layer_name)
         return True, f"Removed layer: {layer_name}"
 
+
 class SetLayerVisibilityAction(AbstractAction):
     @property
     @override
@@ -115,13 +118,14 @@ class SetLayerVisibilityAction(AbstractAction):
         assert data is not None, "'data' was expected but was set to None"
         layer_name = data["name"]
         if layer_name == "background":
-            return False, f"Can't change background layer visibility"
+            return False, "Can't change background layer visibility"
         visibility = data["visibility"]
         try:
             Canvas().set_layer_visibility(layer_name, visibility)
             return True, f"Set visibility of layer '{layer_name}' to {visibility}"
         except ValueError as e:
             return False, str(e)
+
 
 class SwitchActiveLayerAction(AbstractAction):
     @property

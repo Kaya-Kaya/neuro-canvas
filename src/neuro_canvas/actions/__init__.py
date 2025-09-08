@@ -23,7 +23,3 @@ for action_class in AbstractAction.__subclasses__():
             all_actions.append(action_instance)
     except AttributeError as e:
         raise RuntimeError(f"An error happened during runtime: {e}")
-
-# todo:
-# - Make this check for the respective permission within config.json
-# - Get each action class to have a new property that just returns the permission it's attached to. (this ideally will be the exact key value it needs to look at)
