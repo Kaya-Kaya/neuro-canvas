@@ -7,13 +7,13 @@ on:
   push:
     branches: [ "main" ]
     paths-ignore:
-      - ".github/"
-      - "example_images/"
+      - ".github/**"
+      - "example_images/**"
   pull_request:
     branches: [ "main" ]
     paths-ignore:
-      - ".github/"
-      - "example_images/"
+      - ".github/**"
+      - "example_images/**"
 
 permissions:
   contents: read
