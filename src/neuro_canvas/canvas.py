@@ -4,7 +4,9 @@ from pygame import gfxdraw, Rect
 import pygame
 
 import math
+import os
 
+from pathlib import Path
 from functools import partial, wraps
 from typing import Any
 from collections.abc import Callable
@@ -237,8 +239,11 @@ class Canvas:
         if name in self._attributes.layers:
             self._attributes.active_layer = name
 
+    def get_active_layer(self) -> str:
+        return self._attributes.active_layer
+
     def layer_exists(self, layer_name: str) -> bool:
         return layer_name in self._attributes.layers
 
-    def export(self, filename: str, filetype: str) -> None:
-        pygame.image.save(self._screen, f"{filename}.{filetype}")
+    def export(self, filename: str, filetype: str, save_dir: Path = Path(os.getcwd())) -> None:
+        pygame.image.save(self._screen, save_dir / f"{filename}.{filetype}")

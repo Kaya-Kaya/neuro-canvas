@@ -31,12 +31,12 @@ class BucketFillAction(AbstractAction):
                 "x": {
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": SCREEN_WIDTH
+                    "exclusiveMaximum": SCREEN_WIDTH
                 },
                 "y": {
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": SCREEN_HEIGHT
+                    "exclusiveMaximum": SCREEN_HEIGHT
                 }
             },
             "required": ["x", "y"]
