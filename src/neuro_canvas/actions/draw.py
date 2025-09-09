@@ -1,4 +1,4 @@
-from typing import Optional, Final
+from typing import Optional
 
 from ..canvas import Canvas
 from ..constants import SCREEN_WIDTH, SCREEN_HEIGHT, BEZIER_STEPS
