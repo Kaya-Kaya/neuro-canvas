@@ -31,3 +31,10 @@ neuro-canvas = "neuro_canvas.application:start"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[dependency-groups]
+dev = [
+    "flake8>=7.3.0",
+    "pytest>=8.4.2",
+    "pytest-trio>=0.8.0",
+]
