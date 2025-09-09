@@ -56,7 +56,7 @@ async def run() -> None:
 
             if neuro_component.not_connected:
                 logger.error(CONNECTION_FAILURE_MSG)
-                return
+                raise RuntimeError(CONNECTION_FAILURE_MSG)
 
             await neuro_component.send_startup_command()
 
@@ -78,6 +78,8 @@ async def run() -> None:
         except (KeyboardInterrupt, trio.Cancelled):
             logger.info(SHUTDOWN_MSG)
             return
+        except RuntimeError as e:
+            raise e
         finally:
             await neuro_component.stop()
             pygame.quit()
