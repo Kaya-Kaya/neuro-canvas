@@ -1,10 +1,8 @@
 from typing import Optional, Final
 
 from ..canvas import Canvas
-from ..constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from ..constants import SCREEN_WIDTH, SCREEN_HEIGHT, BEZIER_STEPS
 from ._abc import AbstractAction, override
-
-BEZIER_STEPS: Final = 4
 
 
 class DrawLineAction(AbstractAction):

@@ -23,3 +23,5 @@ COLORS: Final[dict[str, Color]] = {
     "brown": Color(102, 51, 0),
     "orange": Color(255, 165, 0)
 }
+
+BEZIER_STEPS: Final = 4
