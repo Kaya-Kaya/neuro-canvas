@@ -4,7 +4,8 @@
   "properties": {
     "configVersion": {
       "description": "The version of the config. It can be used to tell Neuro's Canvas how to read the config.",
-      "type": "number"
+      "type": "number",
+      "enum": [1]
     },
     "settings": {
       "type": "object",
@@ -65,7 +66,8 @@
               "type": "boolean",
               "description": "Let Neuro create and modify her own layers."
             }
-          }
+          },
+          "additionalProperties": false
         },
         "misc": {
           "description": "Whether to grant access to various miscellaneous actions.",
@@ -83,7 +85,8 @@
               "type": "boolean",
               "description": "Whether to allow Neuro to save her file. To restrict the list of file types she can save, refer to settings.allowed_save_file_formats"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "draw": {
           "description": "Whether to allow her to draw with various presets.",
@@ -113,7 +116,8 @@
               "type": "boolean",
               "description": "Whether to allow her to draw a rectangle."
             }
-          }
+          },
+          "additionalProperties": false
         },
         "brush": {
           "description": "Whether to allow her to change the colour of her brush.",

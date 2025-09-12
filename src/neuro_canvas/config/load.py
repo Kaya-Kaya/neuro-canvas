@@ -19,7 +19,27 @@ default_config: object = {
             # Setting a value to 0 will prompt Neuro to input her decision
         },
     },
-    "permissions": {}
+    "permissions": {
+        "layers": {
+            "background": True,
+            "base": True,
+            "custom": True
+        },
+        "misc": {
+            "bucket": True,
+            "undo": True,
+            "export": True
+        },
+        "draw": {
+            "line": True,
+            "line_sequence": True,
+            "curve": True,
+            "circle": True,
+            "triangle": True,
+            "rectangle": True
+        },
+        "brush": True
+    }
 }
 
 # Don't initialize config - let it be undefined until explicitly set
