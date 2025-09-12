@@ -52,7 +52,6 @@ def handle_json(
             return False, f"Unexpected error: {str(e)}"
     return wrapper
 
-
 class AbstractAction(ABC):
     @property
     @abstractmethod
@@ -67,6 +66,11 @@ class AbstractAction(ABC):
     @property
     @abstractmethod
     def schema(self) -> dict[str, object]:
+        pass
+
+    @property
+    @abstractmethod
+    def permission(self) -> str:
         pass
 
     def get_action(self) -> Action:

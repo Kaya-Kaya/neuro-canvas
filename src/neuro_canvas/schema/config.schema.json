@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "configVersion": {
+      "description": "The version of the config. It can be used to tell Neuro's Canvas how to read the config.",
+      "type": "number",
+      "enum": [1]
+    },
+    "settings": {
+      "type": "object",
+      "description": "Settings to control the behaviour of the canvas.",
+      "additionalProperties": false,
+      "properties": {
+        "allowed_save_file_formats": {
+          "type": "array",
+          "description": "File formats that Neuro is allowed to save in.",
+          "items": {
+            "type": "string",
+            "enum": ["png", "jpg", "bmp", "tga"]
+          },
+          "additionalItems": true,
+          "uniqueItems": true
+        },
+        "canvas_size": {
+          "description": "Canvas size on startup. Setting either unit to 0 will prompt Neuro to input her decision on that dimension.",
+          "type": "object",
+          "properties": {
+            "height": {
+              "description": "Canvas height",
+              "type": "integer",
+              "minimum": 0
+            },
+            "width": {
+              "description": "Canvas width",
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "height",
+            "width"
+          ]
+        }
+      }
+    },
+    "permissions": {
+      "description": "Permissions that dictate what Neuro can do.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "layers": {
+          "description": "Whether to grant access to layering actions.",
+          "type": "object",
+          "properties": {
+            "background": {
+              "type": "boolean",
+              "description": "Grant Neuro access to the background layer."
+            },
+            "base": {
+              "type": "boolean",
+              "description": "Grant Neuro access to the base layer"
+            },
+            "custom": {
+              "type": "boolean",
+              "description": "Let Neuro create and modify her own layers."
+            }
+          },
+          "additionalProperties": false
+        },
+        "misc": {
+          "description": "Whether to grant access to various miscellaneous actions.",
+          "type": "object",
+          "properties": {
+            "bucket": {
+              "type": "boolean",
+              "description": "Whether to allow Neuro to cover a section with a specific colour."
+            },
+            "undo": {
+              "type": "boolean",
+              "description": "Whether to allow Neuro to undo her mistakes."
+            },
+            "export": {
+              "type": "boolean",
+              "description": "Whether to allow Neuro to save her file. To restrict the list of file types she can save, refer to settings.allowed_save_file_formats"
+            }
+          },
+          "additionalProperties": false
+        },
+        "draw": {
+          "description": "Whether to allow her to draw with various presets.",
+          "type": "object",
+          "properties": {
+            "line": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a straight line."
+            },
+            "line_sequence": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a sequence of straight lines."
+            },
+            "curve": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a curve."
+            },
+            "circle": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a circle."
+            },
+            "triangle": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a triangle."
+            },
+            "rectangle": {
+              "type": "boolean",
+              "description": "Whether to allow her to draw a rectangle."
+            }
+          },
+          "additionalProperties": false
+        },
+        "brush": {
+          "description": "Whether to allow her to change the colour of her brush.",
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "required": [
+    "configVersion"
+  ]
+}

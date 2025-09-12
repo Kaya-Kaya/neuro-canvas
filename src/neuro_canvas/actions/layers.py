@@ -1,5 +1,4 @@
 from typing import Optional
-
 from ..canvas import Canvas
 from ._abc import AbstractAction, override
 
@@ -25,6 +24,11 @@ class AddLayerAction(AbstractAction):
                 "name": {"type": "string"}
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return 'layers'
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -58,6 +62,11 @@ class RemoveLayerAction(AbstractAction):
                 "name": {"type": "string"}
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return 'layers'
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -98,6 +107,11 @@ class SetLayerVisibilityAction(AbstractAction):
                 }
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return 'layers'
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -134,6 +148,11 @@ class SwitchActiveLayerAction(AbstractAction):
                 "name": {"type": "string"}
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return 'layers'
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:

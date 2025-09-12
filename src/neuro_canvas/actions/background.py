@@ -31,6 +31,11 @@ class SetBackgroundColorAction(AbstractAction):
                 },
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "layers"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:
@@ -85,6 +90,11 @@ class SetCustomBackgroundColorAction(AbstractAction):
                 },
             }
         }
+    
+    @property
+    @override
+    def permission(self) -> str:
+        return "layers"
 
     @override
     async def perform_action(self, data: Optional[dict]) -> tuple[bool, Optional[str]]:

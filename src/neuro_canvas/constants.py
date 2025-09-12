@@ -24,4 +24,7 @@ COLORS: Final[dict[str, Color]] = {
     "orange": Color(255, 165, 0)
 }
 
+ERROR_SUFFIX: Final = "\nSomeone tell the maintainers at https://github.com/Kaya-Kaya/neuro-canvas that there's an issue with their app!"
+
 BEZIER_STEPS: Final = 4
+  
